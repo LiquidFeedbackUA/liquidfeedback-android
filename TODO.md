@@ -21,6 +21,7 @@
   
 ## DONE
 
+* 20120623 koppi: generate deployment keys, lint
 * 20120622 koppi: App rename: LiquiDroid
 * 20120609 koppi: SyncService optimizations
 * 20120608 koppi: SyncService
