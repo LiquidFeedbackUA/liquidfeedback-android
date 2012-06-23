@@ -11,6 +11,9 @@
     
     <string name="event">Event</string>
     
+    <!-- Action Constants -->
+    <string name="action_login_sync">liqui.droid.sync.LOGIN</string>
+    
     <!-- Titles -->
     <string name="title_sign_in">Login</string>
     

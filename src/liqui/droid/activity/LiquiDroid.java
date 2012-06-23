@@ -147,7 +147,7 @@ public class LiquiDroid extends Base
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        if (getIntent().getAction() != null && getIntent().getAction().equals("liqui.droid.sync.LOGIN")) {
+        if (getIntent().getAction() != null && getIntent().getAction().equals(getString(R.string.action_login_sync))) {
             // we create a new account
         } else {
             Cursor c = getContentResolver().query(CONTENT_URI, null, "last_active = 1", null, null);
@@ -218,11 +218,10 @@ public class LiquiDroid extends Base
                 String name = c.getString(c.getColumnIndex(DBSystem.TableLQFBs.COLUMN_NAME));
                 String key  = mEditTextApiKey.getText().toString().trim();
 
-                Uri LQFBUri = DBSystemProvider.LQFBS_CONTENT_URI;
                 ContentValues values = new ContentValues();
                 values.put(DBSystem.TableLQFBs.COLUMN_NAME, name);
                 values.put(DBSystem.TableLQFBs.COLUMN_API_KEY, key);
-                getContentResolver().update(LQFBUri, values, DBSystem.TableLQFBs.COLUMN_NAME + " = ?", new String[] { name });
+                getContentResolver().update(CONTENT_URI, values, DBSystem.TableLQFBs.COLUMN_NAME + " = ?", new String[] { name });
 
                 hideKeyboard(mButtonLogin.getWindowToken());
                 new LoginTask(LiquiDroid.this).execute(getAPIName(), getAPIUrl());
@@ -247,7 +246,7 @@ public class LiquiDroid extends Base
             }
         });
 
-        if (getIntent().getAction() != null && getIntent().getAction().equals("liqui.droid.sync.LOGIN")) {
+        if (getIntent().getAction() != null && getIntent().getAction().equals(getString(R.string.action_login_sync))) {
             // we create a new account
             
             LinearLayout llExplore = (LinearLayout) findViewById(R.id.ll_explore);
@@ -320,7 +319,7 @@ public class LiquiDroid extends Base
                     mMemberId = String.valueOf(si.currentMemberId);
                     mSessionKey = sessionKey;
                     
-                    Uri LQFBUri = Uri.parse(DBSystemProvider.LQFBS_CONTENT_URI);
+                    Uri LQFBUri = DBSystemProvider.LQFBS_CONTENT_URI;
 
                     // clear all last active entries
                     ContentValues valuesActive = new ContentValues();
@@ -420,7 +419,7 @@ public class LiquiDroid extends Base
                 } else if (mException) {
                     Toast.makeText(activity, mExceptionMsg, Toast.LENGTH_LONG).show();
                 } else {
-                    if (getIntent().getAction() != null && getIntent().getAction().equals("liqui.droid.sync.LOGIN")) {
+                    if (getIntent().getAction() != null && getIntent().getAction().equals(getString(R.string.action_login_sync))) {
                         activity.finish();
                     } else {
                         Intent intent = new Intent().setClass(LiquiDroid.this, MemberActivity.class);
