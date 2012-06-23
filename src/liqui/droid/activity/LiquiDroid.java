@@ -320,7 +320,7 @@ public class LiquiDroid extends Base
                     mMemberId = String.valueOf(si.currentMemberId);
                     mSessionKey = sessionKey;
                     
-                    Uri LQFBUri = Uri.parse("content://liqui.droid.system/lqfbs");
+                    Uri LQFBUri = Uri.parse(DBSystemProvider.LQFBS_CONTENT_URI);
 
                     // clear all last active entries
                     ContentValues valuesActive = new ContentValues();
@@ -338,7 +338,7 @@ public class LiquiDroid extends Base
                             new String[] { LoginTask.this.mApiName });
                     
                     // if (!AccountAuthenticatorService.hasAccount(mTarget.get())) {
-                        Account account = new Account(mMemberId + "@" + mApiName, "liqui.droid.account");
+                        Account account = new Account(mMemberId + "@" + mApiName, Constants.Account.TYPE);
 
                         Log.d("XXX", "Adding account: " + account.toString());
 

@@ -31,6 +31,7 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import liqui.droid.Constants;
+import liqui.droid.R;
 import liqui.droid.activity.LiquiDroid;
 import liqui.droid.db.DBProvider;
 
@@ -57,7 +58,7 @@ public class AccountAuthenticatorService extends Service {
             
             String apiName = userData.getString(Constants.Account.API_NAME);
             
-            Account account = new Account(memberId + "@" + apiName, "liqui.droid.account");
+            Account account = new Account(memberId + "@" + apiName, ctx.getResources().getString(R.string.account_type));
             AccountManager am = AccountManager.get(ctx);
             
             // Log.d("XXX", "addAccount userdata: " + userData.toString());
@@ -80,7 +81,7 @@ public class AccountAuthenticatorService extends Service {
 
         public static Boolean hasLQFBAccount(Context ctx) {
             AccountManager am = AccountManager.get(ctx);
-            Account[] accounts = am.getAccountsByType("liqui.droid.account");
+            Account[] accounts = am.getAccountsByType(ctx.getResources().getString(R.string.account_type));
             if(accounts != null && accounts.length > 0)
                 return true;
             else
@@ -89,7 +90,7 @@ public class AccountAuthenticatorService extends Service {
 
         public static void removeLQFBAccount(Context ctx) {
             AccountManager am = AccountManager.get(ctx);
-            Account[] accounts = am.getAccountsByType("liqui.droid.account");
+            Account[] accounts = am.getAccountsByType(ctx.getResources().getString(R.string.account_type));
             for(Account account : accounts) {
                 am.removeAccount(account, null, null);
             }
@@ -230,7 +231,7 @@ public class AccountAuthenticatorService extends Service {
     public static void resyncAccount(Context context) {
         Log.i(TAG, "resyncAccount");
         AccountManager am = AccountManager.get(context);
-        Account[] accounts = am.getAccountsByType("liqui.droid.account");
+        Account[] accounts = am.getAccountsByType(context.getResources().getString(R.string.account_type));
         if (ContentResolver.getSyncAutomatically(accounts[0], DBProvider.AUTHORITY)) {
             //Try turning it off and on again
             ContentResolver.setSyncAutomatically(accounts[0], DBProvider.AUTHORITY, false);

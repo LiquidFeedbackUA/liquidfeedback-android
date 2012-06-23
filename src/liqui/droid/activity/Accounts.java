@@ -56,7 +56,7 @@ public class Accounts extends Base implements OnItemClickListener {
         setBreadCrumbs();
         
         accountManager = AccountManager.get(getApplicationContext());
-        Account[] accounts = accountManager.getAccountsByType("liqui.droid.account");
+        Account[] accounts = accountManager.getAccountsByType(Constants.Account.TYPE);
         
         listView = (ListView) findViewById(R.id.list_view);
         listView.setAdapter(new AccountsAdapter(this, R.layout.row_account, accounts));

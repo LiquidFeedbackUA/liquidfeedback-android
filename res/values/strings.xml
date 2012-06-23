@@ -7,6 +7,8 @@
 
     <string name="app_name">LiquiDroid</string>
     
+    <string name="account_type">liqui.droid.account</string>
+    
     <string name="event">Event</string>
     
     <!-- Titles -->

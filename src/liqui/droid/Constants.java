@@ -28,6 +28,7 @@ public interface Constants {
         public static final String API_URL     = "API_URL";
         public static final String MEMBER_ID   = "MEMBER_ID";
         public static final String SESSION_KEY = "SESSION_KEY";
+        public static final String TYPE        = "liqui.droid.account";
     }
     
     public static final Integer LIMIT = 100;
