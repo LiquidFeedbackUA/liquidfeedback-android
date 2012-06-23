@@ -19,6 +19,7 @@ package liqui.droid.activity;
 import liqui.droid.Constants;
 import liqui.droid.LQFBApplication;
 import liqui.droid.db.DBSystem;
+import liqui.droid.db.DBSystemProvider;
 import liqui.droid.holder.BreadCrumbHolder;
 import liqui.droid.service.SyncService;
 import liqui.droid.util.ActionBar;
@@ -788,13 +789,13 @@ public class Base extends FragmentActivity implements DetachableResultReceiver.R
             case (42) : { // open accounts 
               if (resultCode == Activity.RESULT_OK) { 
               
-                      Account account = intent.getParcelableExtra("account");
+                      Account account = intent.getParcelableExtra(Constants.Account.NAME);
                       
                       AccountManager am = AccountManager.get(this);
                       
                       Log.d("XXX", "Selected account: " + account);
                       
-                      Uri LQFBUri = Uri.parse("content://liqui.droid.system/lqfbs");
+                      Uri LQFBUri = DBSystemProvider.LQFBS_CONTENT_URI;
 
                       // clear all last active entries
                       ContentValues valuesActive = new ContentValues();

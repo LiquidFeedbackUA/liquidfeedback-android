@@ -39,11 +39,13 @@ import liqui.droid.R;
 
 public class Accounts extends Base implements OnItemClickListener {
     
-    protected AccountManager accountManager;
-    protected Intent intent;
-    protected ListView listView;
+    protected AccountManager mAccountManager;
+    
+    protected Intent mIntent;
     
     protected AccountsAdapter mAdapter;
+    
+    protected ListView mListView;
     
     protected Button mButtonAccountAdd;
 
@@ -55,12 +57,12 @@ public class Accounts extends Base implements OnItemClickListener {
         setUpActionBar();
         setBreadCrumbs();
         
-        accountManager = AccountManager.get(getApplicationContext());
-        Account[] accounts = accountManager.getAccountsByType(Constants.Account.TYPE);
+        mAccountManager = AccountManager.get(getApplicationContext());
+        Account[] accounts = mAccountManager.getAccountsByType(Constants.Account.TYPE);
         
-        listView = (ListView) findViewById(R.id.list_view);
-        listView.setAdapter(new AccountsAdapter(this, R.layout.row_account, accounts));
-        listView.setOnItemClickListener(this);
+        mListView = (ListView) findViewById(R.id.list_view);
+        mListView.setAdapter(new AccountsAdapter(this, R.layout.row_account, accounts));
+        mListView.setOnItemClickListener(this);
         
         mButtonAccountAdd = (Button) findViewById(R.id.btn_account_add);
         mButtonAccountAdd.setOnClickListener(new OnClickListener() {
@@ -76,7 +78,7 @@ public class Accounts extends Base implements OnItemClickListener {
     protected void accountAdd() {
         Intent intent = new Intent().setClass(Accounts.this, LiquiDroid.class);
         
-        intent.setAction("liqui.droid.sync.LOGIN");
+        intent.setAction(getString(R.string.action_login_sync));
         startActivity(intent);
         
         finish();
@@ -98,9 +100,9 @@ public class Accounts extends Base implements OnItemClickListener {
 
     @Override
     public void onItemClick(AdapterView<?> l, View v, int position, long id) {
-        Account account = (Account)listView.getItemAtPosition(position);
+        Account account = (Account)mListView.getItemAtPosition(position);
         Intent intent = new Intent();
-        intent.putExtra("account", account);
+        intent.putExtra(Constants.Account.NAME, account);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }
@@ -132,7 +134,7 @@ public class Accounts extends Base implements OnItemClickListener {
             
             Account account = getItem(position);
             holder.tvTitle.setText(account.name);
-            holder.tvDesc.setText(accountManager.getUserData(account, Constants.Account.API_URL));
+            holder.tvDesc.setText(mAccountManager.getUserData(account, Constants.Account.API_URL));
             
             return row;
         }
