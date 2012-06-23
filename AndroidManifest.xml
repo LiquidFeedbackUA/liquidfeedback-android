@@ -87,8 +87,7 @@
         
         
         <activity
-            android:name=".activity.LiquiDroid"
-            android:permission="liqui.droid.permission.sync">
+            android:name=".activity.LiquiDroid" >
             <intent-filter>
                 <action
                     android:name="android.intent.action.MAIN" />
