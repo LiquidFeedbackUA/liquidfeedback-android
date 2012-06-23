@@ -30,7 +30,7 @@
             <LinearLayout
                 android:id="@+id/ll_part"
                 android:orientation="horizontal"
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
             </LinearLayout>
         </HorizontalScrollView>

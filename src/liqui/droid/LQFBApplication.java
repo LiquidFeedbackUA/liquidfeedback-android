@@ -18,14 +18,11 @@ package liqui.droid;
 
 import lfapi.v2.schema.Area;
 import liqui.droid.activity.MemberActivity;
-import liqui.droid.R;
 
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.widget.Toast;
 
 /**
  * The Class LQFBApplication.
@@ -76,31 +73,5 @@ public class LQFBApplication extends Application {
         intent.putExtra(Constants.Member.LOGIN, login);
         intent.putExtra(Constants.Member.NAME, name);
         context.startActivity(intent);
-    }
-
-    /**
-     * Not found message.
-     * 
-     * @param context the context
-     * @param pluralsId the plurals id
-     */
-    public void notFoundMessage(Context context, int pluralsId) {
-        Resources res = context.getResources();
-        Toast.makeText(
-                context,
-                String.format(res.getString(R.string.record_not_found),
-                        res.getQuantityString(pluralsId, 1)), Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Not found message.
-     * 
-     * @param context the context
-     * @param object the object
-     */
-    public void notFoundMessage(Context context, String object) {
-        Resources res = context.getResources();
-        Toast.makeText(context, String.format(res.getString(R.string.record_not_found), object),
-                Toast.LENGTH_SHORT).show();
     }
 }

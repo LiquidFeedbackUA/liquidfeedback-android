@@ -31,13 +31,10 @@ import liqui.droid.R;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -55,7 +52,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,7 +63,7 @@ import java.util.HashMap;
 /**
  * The Class Base.
  */
-public class Base extends FragmentActivity implements DetachableResultReceiver.Receiver {
+public abstract class Base extends FragmentActivity implements DetachableResultReceiver.Receiver {
     
     protected boolean mSyncing = false;
 
@@ -191,15 +187,10 @@ public class Base extends FragmentActivity implements DetachableResultReceiver.R
             Intent intentLQFBEdit = new Intent().setClass(this, LQFBListCached.class);
             intentLQFBEdit.putExtras(extras);
             startActivity(intentLQFBEdit);
-            return true;
-        case R.id.about:
-            openAboutDialog();
+            overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
             return true;
         case R.id.menu_contacts:
             openContacts();
-            return true;
-        case R.id.menu_feedback:
-            openFeedbackDialog();
             return true;
         case R.id.menu_refresh:
             triggerRefresh();
@@ -229,6 +220,7 @@ public class Base extends FragmentActivity implements DetachableResultReceiver.R
         intent.putExtras(extras);
 
         startActivity(intent);
+        overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
     }
     
     private void openAccounts() {
@@ -242,6 +234,7 @@ public class Base extends FragmentActivity implements DetachableResultReceiver.R
         intent.putExtras(extras);
         
         startActivityForResult(intent, 42);
+        overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
     }
 
     private void openContacts() {
@@ -255,6 +248,7 @@ public class Base extends FragmentActivity implements DetachableResultReceiver.R
         intent.putExtras(extras);
         
         startActivity(intent);
+        overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
     }
 
     private void triggerRefresh() {
@@ -279,83 +273,6 @@ public class Base extends FragmentActivity implements DetachableResultReceiver.R
      */
     public boolean setMenuOptionItemSelected(MenuItem item) {
         return true;
-    }
-    
-    /**
-     * Open about dialog.
-     */
-    public void openAboutDialog() {
-        Dialog dialog = new Dialog(this);
-
-        dialog.setContentView(R.layout.dlg_about);
-        
-        try {
-            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            String versionName = packageInfo.versionName;
-            dialog.setTitle(getResources().getString(R.string.app_name) + " v" + versionName);
-        } 
-        catch (PackageManager.NameNotFoundException e) {
-            dialog.setTitle(getResources().getString(R.string.app_name));
-        }
-        
-        Button btnByEmail = (Button) dialog.findViewById(R.id.btn_by_email);
-        btnByEmail.setOnClickListener(new OnClickListener() {
-            
-            @Override
-            public void onClick(View arg0) {
-                Intent sendIntent = new Intent(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{getResources().getString(R.string.my_email)});
-                sendIntent.setType("message/rfc822");
-                startActivity(Intent.createChooser(sendIntent, "Select email application."));
-            }
-        });
-        
-        dialog.show();
-    }
-    
-    /**
-     * Open feedback dialog.
-     */
-    public void openFeedbackDialog() {
-        Dialog dialog = new Dialog(this);
-
-        dialog.setContentView(R.layout.dlg_feedback);
-        dialog.setTitle(getResources().getString(R.string.feedback));
-        
-        Button btnByEmail = (Button) dialog.findViewById(R.id.btn_by_email);
-        btnByEmail.setOnClickListener(new OnClickListener() {
-            
-            @Override
-            public void onClick(View arg0) {
-                Intent sendIntent = new Intent(Intent.ACTION_SEND);
-                sendIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{getResources().getString(R.string.my_email)});
-                sendIntent.setType("message/rfc822");
-                startActivity(Intent.createChooser(sendIntent, "Select email application."));
-            }
-        });
-        
-        dialog.show();
-    }
-    
-    /**
-     * Open donate dialog.
-     */
-    public void openDonateDialog() {
-        Dialog dialog = new Dialog(this);
-        dialog.setTitle(getResources().getString(R.string.donate));
-        dialog.setContentView(R.layout.dlg_donate);
-        Button btn = (Button) dialog.findViewById(R.id.btn_donate);
-        btn.setOnClickListener(new OnClickListener() {
-            
-            @Override
-            public void onClick(View view) {
-                String url = "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=CLFEUAAXKXLLU&lc=MY&item_name=Donate%20for%20Gh4a&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted";
-                Intent i = new Intent(Intent.ACTION_VIEW);
-                i.setData(Uri.parse(url));
-                startActivity(i);     
-            }
-        });
-        dialog.show();
     }
     
     /**
@@ -497,6 +414,7 @@ public class Base extends FragmentActivity implements DetachableResultReceiver.R
                 intent.putExtras(extras);
                 
                 mTarget.get().startActivity(intent);
+                mTarget.get().overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
             }
         }
     };
@@ -731,7 +649,8 @@ public class Base extends FragmentActivity implements DetachableResultReceiver.R
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         intent.putExtra(Intent.EXTRA_TEXT, text);
 
-        startActivity(Intent.createChooser(intent, getString(R.string.share)));
+        startActivity(Intent.createChooser(intent, getString(R.string.title_share)));
+        overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
     }
     
     public Uri dbUri(Uri uri) {

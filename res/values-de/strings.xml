@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
+    <string name="koppi_right">Copyright 2011&#8211;2012 Jakob Flierl</string>
+    
+    <string name="actionbar_activity_not_found">Intent Öffnen fehlgeschlagen&#8230;</string>
+    
+    <string name="app_name">LiquiDroid</string>
+    
+    <string name="account_type">liqui.droid.account</string>
+    
+    <string name="event">Ereignis</string>
+    
+    <!-- Action Constants -->
+    <string name="action_login_sync">liqui.droid.sync.LOGIN</string>
+    
     <!-- Titles -->
     <string name="title_sign_in">Anmelden</string>
-	<string name="title_explore">Durchsuche</string>
-    
-    <!-- Actions -->
-    <string name="share">Teile</string>
+    <string name="title_explore">Durchsuchen</string>
+    <string name="title_share">Teile</string>
     
 	<!-- Menus -->
     <string name="menu_edit_lqfbs">Editiere LQFBs</string>
@@ -14,14 +25,10 @@
     <string name="menu_feedback">Feedback</string>
     <string name="menu_refresh">Aktualisieren</string>
     <string name="menu_test">Test</string>
-    <string name="menu_explore">Durchsuchen</string>
     
     <string name="menu_accounts">Konten</string>
-    <string name="menu_members">Mitglieder</string>
     <string name="menu_contacts">Kontakte</string>
     <string name="menu_profile">Profil</string>
-    <string name="menu_login">Anmelden</string>
-    <string name="menu_logout">Abmelden</string>
     
     <string name="menu_sort_ascending">Sortiere aufsteigend</string>
     <string name="menu_sort_descending">Sortiere absteigend</string>
@@ -45,15 +52,6 @@
     <string name="bt_lqfb_save">Speichern..</string>
     
     <string name="lqfb_explore">Durchsuche</string>
-    
-    <string name="lqfb_about_instance">Über diese Instanz:</string>
-    
-    <string name="lqfb_initiatives">Inis:</string>
-    <string name="lqfb_issues">Themen:</string>
-    <string name="lqfb_members">Mitglieder:</string>
-    
-    <string name="lqfb_last_synced">Zuletzt synchronisiert:</string>
-    <string name="lqfb_last_synced_never">Zuletzt synchronisiert: noch nie.</string>
     
     <string name="lqfb_signing_in">Anmeldung läuft&#8230;</string>
     <string name="lqfb_invalid_api_key">Ungültiger API-Schlüssel</string>
@@ -115,5 +113,8 @@
     <string name="member_success_unfollow">Du folgst nun Mitglied #%1$s nicht mehr.</string>
     <string name="member_error_follow">%2$s</string>
     <string name="member_error_unfollow">%2$s</string>
-    
+
+    <!-- Search -->
+    <string name="search">Suche</string>
+    <string name="search_type_to_filter">Suche..</string>
 </resources>

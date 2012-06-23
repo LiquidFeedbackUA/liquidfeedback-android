@@ -17,6 +17,7 @@
 * SyncService
  * automatisch starten, progress bar notification
  * Reihenfolge und Timing optimieren.
+ * Sync Stats
   
 ## DONE
 

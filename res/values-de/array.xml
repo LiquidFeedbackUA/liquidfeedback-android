@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array
+        name="areas_array">
+        <item>Beliebiges Thema</item>
+    </string-array>
+    <string-array
+        name="search_types_array">
+        <item>Themen</item>
+        <item>Mitglieder</item>
+    </string-array>
+    <string-array
         name="array_explore">
         <item>Gliederungen &amp; Themenbereiche</item>
         <item>Ereignisse</item>

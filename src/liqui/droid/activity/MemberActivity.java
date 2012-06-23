@@ -186,7 +186,6 @@ public class MemberActivity extends Base implements OnClickListener, OnItemClick
         Intent intent = new Intent().setClass(this, MemberEdit.class);
         intent.putExtra(Constants.Member.LOGIN, mMemberId);
         intent.putExtra(Constants.ACTIONBAR_TITLE, mMemberId);
-        intent.putExtra(Constants.SUBTITLE, getResources().getString(R.string.user_news_feed));
         
         Bundle extras = new Bundle();
         extras.putString(Constants.Account.API_NAME,    getAPIName());

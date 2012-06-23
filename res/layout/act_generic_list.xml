@@ -26,7 +26,4 @@
             <!-- Preview: listitem=@layout/row_initiative -->
         </ListView>
     </FrameLayout>
-    <include
-        layout="@layout/inc_loading"
-        android:id="@+id/loading" />
 </LinearLayout>

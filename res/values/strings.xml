@@ -16,19 +16,20 @@
     
     <!-- Titles -->
     <string name="title_sign_in">Login</string>
+    <string name="title_explore">Explore</string>
+    <string name="title_share">Share</string>
     
     <!-- Menus -->
+    <string name="menu_edit_lqfbs">Edit LQFBs</string>
+    <string name="menu_sign_in">Sign in</string>
+
     <string name="menu_feedback">Feedback</string>
     <string name="menu_refresh">Refresh</string>
     <string name="menu_test">Test</string>
-    <string name="menu_explore">Explore</string>
     
     <string name="menu_accounts">Accounts</string>
-    <string name="menu_members">Members</string>
     <string name="menu_contacts">Contacts</string>
     <string name="menu_profile">Profile</string>
-    <string name="menu_login">Login</string>
-    <string name="menu_logout">Logout</string>
     
     <string name="menu_sort_ascending">Sort ascending</string>
     <string name="menu_sort_descending">Sort descending</string>
@@ -53,23 +54,11 @@
     
     <string name="lqfb_explore">Explore</string>
     
-    <string name="lqfb_about_instance">About this instance:</string>
-    
-    <string name="lqfb_initiatives">Initiatives:</string>
-    <string name="lqfb_issues">Issues:</string>
-    <string name="lqfb_members">Members:</string>
-    
-    <string name="lqfb_last_synced">Last synced:</string>
-    <string name="lqfb_last_synced_never">Last synced: never.</string>
-    
     <string name="lqfb_signing_in">Signing in&#8230;</string>
     <string name="lqfb_invalid_api_key">Invalid API key</string>
     
     <!-- AreaTreeCachedActivity -->
     <string name="units_and_areas">Units &amp; Areas</string>
-    
-    <!-- BaseActivity -->
-    <string name="successful_signout">Successful sign out</string>
     
     <!-- ContactsListCached -->
     <string name="contacts">Contacts</string>
@@ -117,18 +106,11 @@
     <string name="area_join_error">%2$s</string>
     <string name="area_leave_error">%2$s</string>
     
-    <!-- Common -->
-    <string name="record_not_found">%1$s not found</string>
-    <string name="more_data_1">%1$s</string>
-    <string name="more_data">%1$s | %2$s</string>
-    <string name="more_data_3">%1$s | %2$s | %3$s</string>
-    <string name="loading">Loading&#8230;</string>
+    <!-- Search -->
     <string name="search">Search</string>
-    <string name="activity">Activity</string>
-    <string name="logout">Sign out</string>
-    <string name="login">Sign in</string>
-    <string name="please_wait">Please wait</string>
-    <string name="logging_in">Signing in&#8230;</string>
+    <string name="search_type_to_filter">type to filter</string>
+
+    <!-- Common -->
     
     <string name="invalid_login">Invalid API key</string>
     <string name="sign">&lt;i>Sent via LiquidDroid App&lt;i></string>
@@ -183,15 +165,6 @@
     <string name="user_save">Save&#8230;</string>
     
     <string name="user_gravatar">Gravatar</string>
-    
-    <string name="user_watched_repos">Watched Repositories</string>
-    <string name="user_pushable_repos">Pushable Repositories</string>
-    <string name="user_extra_data">%1$d followers | %2$d repos</string>
-    <string name="user_news_feed">News Feed</string>
-    <string name="user_your_actions">Your Actions</string>
-    <string name="user_public_activity">Public Activity</string>
-    <string name="user_private_activity">Private Activity</string>
-    <string name="user_organizations">Organizations</string>
     
     <string name="user_follow_action">Follow</string>
     <string name="user_unfollow_action">Unfollow</string>
