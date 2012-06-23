@@ -19,6 +19,7 @@ package liqui.droid.activity;
 import lfapi.v2.schema.Event;
 import liqui.droid.Constants;
 import liqui.droid.db.DB2Schema;
+import liqui.droid.db.DBProvider;
 import liqui.droid.holder.BreadCrumbHolder;
 import liqui.droid.R;
 
@@ -58,7 +59,7 @@ public class EventListCached extends Base implements LoaderCallbacks<Cursor>, On
         setUpActionBar();
         setBreadCrumbs();
         
-        mContentUri = dbUri("content://liqui.droid.db/events");
+        mContentUri = dbUri(DBProvider.EVENT_CONTENT_URI);
 
         getSupportLoaderManager().initLoader(0, null, this);
         mAdapter = new EventCursorAdapter(this, null, true);

@@ -764,8 +764,33 @@ public class Base extends FragmentActivity implements DetachableResultReceiver.R
         return empty;
     }
     
+    public Integer queryInteger(Uri uri, String column, String selection, String[] selectionArgs, String orderBy) {
+        return queryInteger(uri, column, null, selection, selectionArgs, orderBy);
+    }
+
+    public Integer queryInteger(Uri uri, String column, String[] projection, String selection, String[] selectionArgs, String orderBy) {
+        Cursor c = getContentResolver().query(uri, projection, selection, selectionArgs, orderBy);
+    
+        c.moveToFirst();
+        
+        
+        Integer integer = null;
+    
+        if (!c.isAfterLast()) {
+            integer = c.getInt(c.getColumnIndex(column));
+        }
+    
+        c.close();
+        
+        return integer;
+    }
+
     public String queryString(Uri uri, String column, String selection, String[] selectionArgs, String orderBy) {
-        Cursor c = getContentResolver().query(uri, null, selection, selectionArgs, orderBy);
+        return queryString(uri, column, null, selection, selectionArgs, orderBy);
+    }
+
+    public String queryString(Uri uri, String column, String[] projection, String selection, String[] selectionArgs, String orderBy) {
+        Cursor c = getContentResolver().query(uri, projection, selection, selectionArgs, orderBy);
     
         c.moveToFirst();
         
@@ -779,6 +804,20 @@ public class Base extends FragmentActivity implements DetachableResultReceiver.R
         c.close();
         
         return str;
+    }
+
+    public int queryCount(Uri uri, String selection, String[] selectionArgs, String orderBy) {
+        return queryCount(uri, null, selection, selectionArgs, orderBy);
+    }
+
+    public int queryCount(Uri uri, String[] projection, String selection, String[] selectionArgs, String orderBy) {
+        Cursor c = getContentResolver().query(uri, projection, selection, selectionArgs, orderBy);
+    
+        c.moveToFirst();
+        int count = c.getCount();
+        c.close();
+        
+        return count;
     }
 
     @Override

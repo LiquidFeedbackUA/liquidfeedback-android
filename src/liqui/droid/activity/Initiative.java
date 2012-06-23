@@ -18,6 +18,7 @@ package liqui.droid.activity;
 
 import liqui.droid.Constants;
 import liqui.droid.db.DB;
+import liqui.droid.db.DBProvider;
 import liqui.droid.holder.BreadCrumbHolder;
 import liqui.droid.util.LoadingDialog;
 import liqui.droid.R;
@@ -102,17 +103,16 @@ public class Initiative extends Base {
         b.setTag(Constants.EXPLORE);
         breadCrumbHolders[0] = b;
 
-        Cursor c = getContentResolver().query(dbUri("content://liqui.droid.db/initiatives"), null, "_id = ?", new String[] { mInitiativeId }, null);
+        Cursor c = getContentResolver().query(dbUri(DBProvider.INITIATIVE_CONTENT_URI), null, "_id = ?", new String[] { mInitiativeId }, null);
         c.moveToFirst();
         String issueId = c.getString(c.getColumnIndex(DB.Initiative.COLUMN_ISSUE_ID));
         c.close();
 
-        Uri contentIssues      = dbUri("content://liqui.droid.db/issues");
-
-        Cursor c2 = getContentResolver().query(contentIssues, new String[] { "policy.name AS policy_name" }, "issue.policy_id = policy._id AND issue._id = ?", new String[] { issueId }, null);
-        c2.moveToFirst();
-        String policyName = c2.getString(c2.getColumnIndex("policy_name"));
-        c2.close();
+        String policyName = queryString(
+                dbUri(DBProvider.ISSUE_CONTENT_URI), "policy_name",
+                new String[] { "policy.name AS policy_name" },
+                "issue.policy_id = policy._id AND issue._id = ?",
+                new String[] { issueId }, null);
 
         createBreadcrumb("#" + issueId + " - " + policyName, breadCrumbHolders);
     }
@@ -139,8 +139,6 @@ public class Initiative extends Base {
     class InitiativePagerAdapter extends PagerAdapter {
 
         private View view;
-        private Integer count = null;
-        
         private final Context context;
         
         public InitiativePagerAdapter(Context context, Uri uri) {
@@ -149,57 +147,38 @@ public class Initiative extends Base {
 
         @Override
         public int getCount() {
-            if (count != null) {
-                return count;
-            }
-
-            Cursor c = context.getContentResolver().query(dbUri("content://liqui.droid.db/initiatives"), null, "_id = ?", new String[] { mInitiativeId }, null);
-            c.moveToFirst();
-            String issueId = c.getString(c.getColumnIndex(DB.Initiative.COLUMN_ISSUE_ID));
-            c.close();
-
-            Cursor c2 = context.getContentResolver().query(dbUri("content://liqui.droid.db/initiatives"), null, "issue_id = ?", new String[] { issueId }, "rank, supporter_count DESC, _id");
-            int nr = c2.getCount();
-            c2.close();
-            count = nr;
-            
-            return nr;
+            String issueId = queryString(dbUri(DBProvider.INITIATIVE_CONTENT_URI), DB.Initiative.COLUMN_ISSUE_ID, "_id = ?", new String[] { mInitiativeId }, null);
+            return queryCount(dbUri(DBProvider.INITIATIVE_CONTENT_URI), "issue_id = ?", new String[] { issueId }, "rank, supporter_count DESC, _id");
         }
         
         public int indexOf(int iniId) {
-            Cursor c = context.getContentResolver().query(dbUri("content://liqui.droid.db/initiatives"), null, "_id = ?", new String[] { mInitiativeId }, null);
-            c.moveToFirst();
-            String issueId = c.getString(c.getColumnIndex(DB.Initiative.COLUMN_ISSUE_ID));
-            c.close();
+            String issueId = queryString(dbUri(DBProvider.INITIATIVE_CONTENT_URI), DB.Initiative.COLUMN_ISSUE_ID, "_id = ?", new String[] { mInitiativeId }, null);
 
-            Cursor c2 = context.getContentResolver().query(dbUri("content://liqui.droid.db/initiatives"), null, "issue_id = ?", new String[] { issueId }, "rank, supporter_count DESC, _id");
+            Cursor c = context.getContentResolver().query(dbUri("content://liqui.droid.db/initiatives"), null, "issue_id = ?", new String[] { issueId }, "rank, supporter_count DESC, _id");
             
-            for (int i = 0; i < c2.getCount(); i++) {
-                c2.moveToPosition(i);
-                Integer id = c2.getInt(c2.getColumnIndex(DB.Initiative.COLUMN_ID));
+            for (int i = 0; i < c.getCount(); i++) {
+                c.moveToPosition(i);
+                Integer id = c.getInt(c.getColumnIndex(DB.Initiative.COLUMN_ID));
                 
                 if (iniId == id) {
-                    c2.close();
-                    return c2.getPosition();
+                    c.close();
+                    return c.getPosition();
                 }
             }
             
-            c2.close();
+            c.close();
             
             return -1;
         }
         
         public int getId(int position) {
-            Cursor c = context.getContentResolver().query(dbUri("content://liqui.droid.db/initiatives"), null, "_id = ?", new String[] { mInitiativeId }, null);
-            c.moveToFirst();
-            String issueId = c.getString(c.getColumnIndex(DB.Initiative.COLUMN_ISSUE_ID));
-            c.close();
+            String issueId = queryString(dbUri(DBProvider.INITIATIVE_CONTENT_URI), DB.Initiative.COLUMN_ISSUE_ID, "_id = ?", new String[] { mInitiativeId }, null);
 
-            Cursor c2 = context.getContentResolver().query(dbUri("content://liqui.droid.db/initiatives"), null, "issue_id = ?", new String[] { issueId }, "rank, supporter_count DESC, _id");
+            Cursor c = context.getContentResolver().query(dbUri("content://liqui.droid.db/initiatives"), null, "issue_id = ?", new String[] { issueId }, "rank, supporter_count DESC, _id");
             
-            c2.moveToPosition(position);
-            Integer id = c2.getInt(c2.getColumnIndex(DB.Initiative.COLUMN_ID));
-            c2.close();
+            c.moveToPosition(position);
+            Integer id = c.getInt(c.getColumnIndex(DB.Initiative.COLUMN_ID));
+            c.close();
             
             return id;
         }
@@ -222,7 +201,7 @@ public class Initiative extends Base {
             
             WebView wv = (WebView) view.findViewById(R.id.wv_content);
             
-            Uri.Builder builder2 = dbUri("content://liqui.droid.db/drafts").buildUpon();
+            Uri.Builder builder2 = dbUri(DBProvider.DRAFT_CONTENT_URI).buildUpon();
             
             Cursor cursor2 = getContentResolver().query(builder2.build(), null,
                     "draft.initiative_id = ?",
@@ -274,17 +253,14 @@ public class Initiative extends Base {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            Cursor c = context.getContentResolver().query(dbUri("content://liqui.droid.db/initiatives"), null, "_id = ?", new String[] { mInitiativeId }, null);
-            c.moveToFirst();
-            String issueId = c.getString(c.getColumnIndex(DB.Initiative.COLUMN_ISSUE_ID));
-            c.close();
+            String issueId = queryString(dbUri(DBProvider.INITIATIVE_CONTENT_URI), DB.Initiative.COLUMN_ISSUE_ID, "_id = ?", new String[] { mInitiativeId }, null);
 
-            Cursor c2 = context.getContentResolver().query(dbUri("content://liqui.droid.db/initiatives"), null, "issue_id = ?", new String[] { issueId }, "rank, supporter_count DESC, _id");
+            Cursor c = context.getContentResolver().query(dbUri("content://liqui.droid.db/initiatives"), null, "issue_id = ?", new String[] { issueId }, "rank, supporter_count DESC, _id");
             
-            c2.moveToPosition(position);
-            String id   = c2.getString(c2.getColumnIndex(DB.Initiative.COLUMN_ID));
-            String name = c2.getString(c2.getColumnIndex(DB.Initiative.COLUMN_NAME));
-            c2.close();
+            c.moveToPosition(position);
+            String id   = c.getString(c.getColumnIndex(DB.Initiative.COLUMN_ID));
+            String name = c.getString(c.getColumnIndex(DB.Initiative.COLUMN_NAME));
+            c.close();
             
             return "i" + id + ": " + name;
         }

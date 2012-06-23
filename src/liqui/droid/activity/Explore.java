@@ -192,14 +192,14 @@ public class Explore extends Base {
             
             switch (id.intValue()) {
                 case 1:
-                    Uri AREA_URI = dbUri("content://liqui.droid.db/areas");
+                    Uri AREA_URI = dbUri(DBProvider.AREA_CONTENT_URI);
                     c = context.getContentResolver().query(AREA_URI, null, null, null, null);
                     c.moveToFirst(); count += c.getCount();
                     c.close();
                 break;
                 
                 case 2:
-                    Uri EVENT_URI = dbUri("content://liqui.droid.db/events");
+                    Uri EVENT_URI = dbUri(DBProvider.EVENT_CONTENT_URI);
                     c = context.getContentResolver().query(EVENT_URI, null, null, null, null);
                     c.moveToFirst(); count += c.getCount();
                     c.close();
@@ -220,7 +220,7 @@ public class Explore extends Base {
                 break;
 
                 case 5:
-                    Uri MEMBERS_URI = dbUri("content://liqui.droid.db/members");
+                    Uri MEMBERS_URI = dbUri(DBProvider.MEMBER_CONTENT_URI);
                     c = context.getContentResolver().query(MEMBERS_URI, null, null, null, null);
                     c.moveToFirst(); count += c.getCount();
                     c.close();
