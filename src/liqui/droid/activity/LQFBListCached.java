@@ -46,12 +46,12 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 /**
- * The Class LQFBListCachedActivity.
+ * The Class LQFBListCached.
  */
 public class LQFBListCached extends Base
     implements LoaderCallbacks<Cursor>, OnItemClickListener {
 
-    public static final Uri CONTENT_URI = Uri.parse("content://liqui.droid.system/lqfbs");
+    public static final Uri CONTENT_URI = DBSystemProvider.LQFBS_CONTENT_URI;
     
     protected static final int ACTIVITY_CREATE = 2342;
     

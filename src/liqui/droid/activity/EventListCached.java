@@ -42,7 +42,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import org.ocpsoft.pretty.time.PrettyTime;
 
 /**
- * The Class Event list cached Activity.
+ * The Class EventListCached.
  */
 public class EventListCached extends Base implements LoaderCallbacks<Cursor>, OnItemClickListener {
 

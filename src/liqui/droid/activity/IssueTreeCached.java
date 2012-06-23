@@ -58,7 +58,7 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * The Class IssueTreeCachedActivity.
+ * The Class IssueTreeCached.
  */
 public class IssueTreeCached extends Base implements OnClickListener, OnChildClickListener {
 

@@ -22,6 +22,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import liqui.droid.Constants;
 
+/**
+ * The Class DBSystem.
+ */
 public class DBSystem extends SQLiteOpenHelper {
     
     private static final String DATABASE = "system.db";

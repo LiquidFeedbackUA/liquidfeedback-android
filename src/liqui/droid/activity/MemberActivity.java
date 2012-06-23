@@ -51,7 +51,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import org.ocpsoft.pretty.time.PrettyTime;
 
 /**
- * The Member activity.
+ * The Class MemberActivity.
  */
 public class MemberActivity extends Base implements OnClickListener, OnItemClickListener {
 

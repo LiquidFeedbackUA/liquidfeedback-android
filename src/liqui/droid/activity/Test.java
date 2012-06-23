@@ -42,7 +42,7 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 /**
- * The Class ExploreActivity.
+ * The Class Test.
  */
 public class Test extends Base implements LoaderCallbacks<Cursor>, OnItemClickListener {
 

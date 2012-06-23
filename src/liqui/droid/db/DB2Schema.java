@@ -34,6 +34,9 @@ import lfapi.v2.schema.Privilege;
 import lfapi.v2.schema.Suggestion;
 import lfapi.v2.schema.Unit;
 
+/**
+ * The Class DB2Schema.
+ */
 public class DB2Schema {
     
     public static Area fillArea(Cursor c, String prefix) {

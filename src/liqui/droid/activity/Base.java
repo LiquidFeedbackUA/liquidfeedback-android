@@ -65,7 +65,7 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
 /**
- * The Base activity.
+ * The Class Base.
  */
 public class Base extends FragmentActivity implements DetachableResultReceiver.Receiver {
     

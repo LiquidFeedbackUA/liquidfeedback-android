@@ -66,6 +66,9 @@ import liqui.droid.service.task.SyncVote;
 import liqui.droid.service.task.SyncVoter;
 // import liqui.droid.service.task.SyncVoteComment;
 
+/**
+ * The Class SyncService.
+ */
 public class SyncService extends BaseService {
 
     private static final String TAG = "SyncService";

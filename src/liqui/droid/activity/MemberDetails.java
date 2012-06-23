@@ -59,7 +59,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import java.lang.ref.WeakReference;
 
 /**
- * The Member details activity.
+ * The Class MemberDetails.
  */
 public class MemberDetails extends Base implements OnClickListener, OnItemClickListener {
 

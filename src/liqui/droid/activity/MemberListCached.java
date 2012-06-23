@@ -55,7 +55,7 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 /**
- * The Class UserListCachedActivity.
+ * The Class MemberListCached.
  */
 public class MemberListCached extends Base
     implements LoaderCallbacks<Cursor>, OnItemClickListener, FilterQueryProvider {

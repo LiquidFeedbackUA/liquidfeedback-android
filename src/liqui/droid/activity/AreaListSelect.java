@@ -49,7 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The RepositoryList activity.
+ * The Class AreaListSelect.
  */
 public class AreaListSelect extends Base implements LoaderCallbacks<Cursor>, OnItemClickListener  {
 

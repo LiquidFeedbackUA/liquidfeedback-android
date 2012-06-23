@@ -56,7 +56,7 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 /**
- * The Search activity.
+ * The Class Search.
  */
 public class Search extends Base {
 

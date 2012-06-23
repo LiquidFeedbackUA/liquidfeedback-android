@@ -26,6 +26,9 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 
+/**
+ * The Class DBSystemProvider.
+ */
 public class DBSystemProvider extends ContentProvider {
     
     private DBSystem db;

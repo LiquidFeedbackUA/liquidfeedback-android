@@ -38,7 +38,7 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 /**
- * The Class ExploreActivity.
+ * The Class CalendarEvents.
  */
 public class CalendarEvents extends Base implements LoaderCallbacks<Cursor>, OnItemClickListener {
 

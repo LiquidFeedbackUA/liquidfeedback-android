@@ -40,7 +40,7 @@ import android.webkit.WebView;
 import com.viewpagerindicator.TitlePageIndicator;
 
 /**
- * The Initiative activity.
+ * The Class Initiative.
  */
 public class Initiative extends Base {
 

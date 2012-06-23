@@ -16,6 +16,9 @@
 
 package liqui.droid.service;
 
+/**
+ * The Class AccountAuthenticatorService.
+ */
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;

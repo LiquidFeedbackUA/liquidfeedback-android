@@ -37,6 +37,9 @@ import liqui.droid.Constants;
 import liqui.droid.holder.BreadCrumbHolder;
 import liqui.droid.R;
 
+/**
+ * The Class Accounts.
+ */
 public class Accounts extends Base implements OnItemClickListener {
     
     protected AccountManager mAccountManager;

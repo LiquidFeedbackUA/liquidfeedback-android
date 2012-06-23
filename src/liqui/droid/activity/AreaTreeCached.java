@@ -42,7 +42,7 @@ import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.SimpleCursorTreeAdapter;
 
 /**
- * The Class Area tree cached Activity.
+ * The Class AreaTreeCached.
  */
 public class AreaTreeCached extends Base implements OnChildClickListener {
 

@@ -35,7 +35,7 @@ import android.widget.Toast;
 import android.widget.EditText;
 
 /**
- * The LQFB edit activity.
+ * The Class LQFBEdit.
  */
 public class LQFBEdit extends Base {
 

@@ -55,7 +55,7 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 /**
- * The Class UserListCachedActivity.
+ * The Class ContactListCached.
  */
 public class ContactListCached extends Base
     implements LoaderCallbacks<Cursor>, OnItemClickListener, FilterQueryProvider {

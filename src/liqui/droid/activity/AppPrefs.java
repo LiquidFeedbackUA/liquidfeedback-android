@@ -22,7 +22,7 @@ import android.preference.PreferenceActivity;
 import liqui.droid.R;
 
 /**
- * The Class AppPrefsActivity.
+ * The Class AppPrefs.
  */
 public class AppPrefs extends PreferenceActivity {
 

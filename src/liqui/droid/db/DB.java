@@ -20,6 +20,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ * The Class DB.
+ */
 public class DB extends SQLiteOpenHelper {
     
     protected String mDatabaseName;

@@ -52,7 +52,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import org.joda.time.DateTime;
 
 /**
- * The Member edit activity.
+ * The Class MemberEdit.
  */
 public class MemberEdit extends Base implements OnClickListener, OnItemClickListener {
 

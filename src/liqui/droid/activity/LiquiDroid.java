@@ -68,7 +68,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 /**
- * The LQFB activity.
+ * The Class LiquiDroid.
  */
 public class LiquiDroid extends Base
     implements OnItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor> {

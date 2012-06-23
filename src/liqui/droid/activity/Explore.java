@@ -40,7 +40,7 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 /**
- * The Explore activity.
+ * The Class Explore.
  */
 public class Explore extends Base {
 

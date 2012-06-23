@@ -31,6 +31,9 @@ import java.util.HashMap;
 
 import liqui.droid.util.StringUtils;
 
+/**
+ * The Class DBProvider.
+ */
 public class DBProvider extends ContentProvider {
     
     public static final String TAG = "DBProvider";

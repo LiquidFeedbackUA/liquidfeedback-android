@@ -22,6 +22,9 @@ import android.os.Bundle;
 import liqui.droid.Constants;
 import liqui.droid.util.InfiniteWakelockIntentService;
 
+/**
+ * The Class BaseService.
+ */
 public abstract class BaseService extends InfiniteWakelockIntentService {
     
     protected Intent mIntent;
