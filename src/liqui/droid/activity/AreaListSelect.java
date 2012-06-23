@@ -17,6 +17,7 @@
 package liqui.droid.activity;
 
 import liqui.droid.db.DB;
+import liqui.droid.db.DBProvider;
 import liqui.droid.holder.AreaUnitIssueHolder;
 import liqui.droid.holder.BreadCrumbHolder;
 import liqui.droid.util.RootAdapter;
@@ -65,14 +66,15 @@ public class AreaListSelect extends Base implements LoaderCallbacks<Cursor>, OnI
 
         createBreadcrumb("Area Membership", (BreadCrumbHolder[]) null);
         
-        mContentUri = Uri.parse("content://liqui.droid.db/areas").buildUpon().appendQueryParameter("db", getAPIDB()).build();
+        mContentUri = dbUri(DBProvider.AREA_CONTENT_URI);
         
-        getSupportLoaderManager().initLoader(0, null, this);
         mAdapter = new MembershipCursorAdapter(this, null, true);
         
         ListView listView = (ListView) findViewById(R.id.list_view);
         listView.setOnItemClickListener(this);
         listView.setAdapter(mAdapter);
+
+        getSupportLoaderManager().initLoader(0, null, this);
     }
     
     @Override
@@ -82,7 +84,7 @@ public class AreaListSelect extends Base implements LoaderCallbacks<Cursor>, OnI
 
     @Override
     public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-        CursorLoader cursorLoader = new CursorLoader(getApplication(), mContentUri, null, null, null, "name");
+        CursorLoader cursorLoader = new CursorLoader(getApplication(), mContentUri, null, null, null, DB.Area.COLUMN_NAME);
         return cursorLoader;
     }
 
@@ -118,19 +120,9 @@ public class AreaListSelect extends Base implements LoaderCallbacks<Cursor>, OnI
             TextView tvSummary = (TextView)view.findViewById(R.id.tv_title);
             CheckBox cbSelected = (CheckBox)view.findViewById(R.id.cb_selected);
             
-            Uri uri = Uri.parse("content://liqui.droid.db/memberships").buildUpon().appendQueryParameter("db", getAPIDB()).build();
-            Cursor cursor = context.getContentResolver().query(uri, null, "member_id = ? AND area_id = ?",
+            Uri uri = dbUri(DBProvider.MEMBERSHIP_CONTENT_URI);
+            boolean isMember = !isResultEmpty(uri, "member_id = ? AND area_id = ?",
                     new String[] { getMemberId(), String.valueOf(areaId) }, null);
-            
-            boolean isMember = false;
-            
-            // Log.d("XXXX", "cursor.getCount() " + cursor.getCount());
-            
-            if (cursor.getCount() == 1) {
-                isMember = true;
-            }
-            
-            cursor.close();
 
             tvSummary.setText(areaName);
             
@@ -150,7 +142,8 @@ public class AreaListSelect extends Base implements LoaderCallbacks<Cursor>, OnI
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            Uri MEMBERSHIP_URI = dbUri("content://liqui.droid.db/memberships");
+            Uri MEMBERSHIP_URI = dbUri(DBProvider.MEMBERSHIP_CONTENT_URI);
+            
             if (isChecked) {
                 ContentValues values = new ContentValues();
                 values.put(DB.Membership.COLUMN_MEMBER_ID, getMemberId());
@@ -161,6 +154,7 @@ public class AreaListSelect extends Base implements LoaderCallbacks<Cursor>, OnI
                 Log.d("XXXX", "Joined area " + buttonView.getTag() + " " + uri);
                 
             } else {
+            
                 Uri.Builder ub = MEMBERSHIP_URI.buildUpon();
                 ub = ub.appendQueryParameter("member_id", getMemberId());
                 ub = ub.appendQueryParameter("area_id", String.valueOf(buttonView.getTag()));
@@ -257,19 +251,11 @@ public class AreaListSelect extends Base implements LoaderCallbacks<Cursor>, OnI
             return v;
         }
 
-        /**
-         * The Class ViewHolder.
-         */
         private class ViewHolder {
 
-            /** The tv title. */
             public TextView tvTitle;
 
-            /** The tv desc. */
             public TextView tvDesc;
-
-            /** The tv extra. */
-            // public TextView tvExtra;
 
             public CheckBox cbSelected;
         }
