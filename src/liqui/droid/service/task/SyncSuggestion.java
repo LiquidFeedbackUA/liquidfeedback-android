@@ -24,6 +24,7 @@ import java.util.List;
 import lfapi.v2.schema.Suggestion;
 import lfapi.v2.services.LiquidFeedbackServiceFactory;
 import lfapi.v2.services.LiquidFeedbackService.SuggestionService;
+import lfapi.v2.services.auth.SessionKeyAuthentication;
 import liqui.droid.Constants;
 import liqui.droid.db.DB;
 import liqui.droid.db.DBProvider;
@@ -36,15 +37,21 @@ public class SyncSuggestion extends SyncAbstractTask {
         super(ctx, intent, factory, databaseName, DB.Suggestion.TABLE, SYNC_TIME_MIN_15);
     }
 
-    public void sync(Context ctx, String ids) {
-        SuggestionService ss = mFactory.createSuggestionService();
+    public int sync(Context ctx, String ids) {
+        SuggestionService service = mFactory.createSuggestionService();
+
+        if (isAuthenticated()) {
+            service.setAuthentication(new SessionKeyAuthentication(getSessionKey()));
+        }
+
+        int nr = 0;
         int page = 0; boolean hasMore = true;
         while (hasMore) {
             Suggestion.Options so = new Suggestion.Options();
             so.limit = Constants.LIMIT;
             so.offset = ((page++) * so.limit);
             
-            List<Suggestion> l = ss.getSuggestion(so, null);
+            List<Suggestion> l = service.getSuggestion(so, null);
         
             if (l.size() < so.limit) {
                 hasMore = false;
@@ -72,7 +79,9 @@ public class SyncSuggestion extends SyncAbstractTask {
                 v[idx++] = values;
             }
 
-            ctx.getContentResolver().bulkInsert(dbUri(DBProvider.SUGGESTION_CONTENT_URI), v);
+            nr += ctx.getContentResolver().bulkInsert(dbUri(DBProvider.SUGGESTION_CONTENT_URI), v);
         }
+        
+        return nr;
     }
 }

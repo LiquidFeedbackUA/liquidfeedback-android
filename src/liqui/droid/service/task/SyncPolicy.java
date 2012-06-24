@@ -24,6 +24,7 @@ import java.util.List;
 import lfapi.v2.schema.Policy;
 import lfapi.v2.services.LiquidFeedbackServiceFactory;
 import lfapi.v2.services.LiquidFeedbackService.PolicyService;
+import lfapi.v2.services.auth.SessionKeyAuthentication;
 import liqui.droid.db.DB;
 import liqui.droid.db.DBProvider;
 
@@ -35,9 +36,14 @@ public class SyncPolicy extends SyncAbstractTask {
         super(ctx, intent, factory, databaseName, DB.Policy.TABLE, SYNC_TIME_HOUR_12);
     }
 
-    public void sync(Context ctx, String ids) {
-        PolicyService ps = mFactory.createPolicyService();
+    public int sync(Context ctx, String ids) {
+        PolicyService service = mFactory.createPolicyService();
         
+        if (isAuthenticated()) {
+            service.setAuthentication(new SessionKeyAuthentication(getSessionKey()));
+        }
+
+        int nr = 0;
         // int page = 0;
         boolean hasMore = true;
         while(hasMore) {
@@ -46,7 +52,7 @@ public class SyncPolicy extends SyncAbstractTask {
             // po.offset = ((page++) * po.limit);
             hasMore = false;
             
-            List<Policy> l = ps.getPolicy(po);
+            List<Policy> l = service.getPolicy(po);
 
             ContentValues[] v = new ContentValues[l.size()];
             int idx = 0;
@@ -81,7 +87,9 @@ public class SyncPolicy extends SyncAbstractTask {
                 v[idx++] = values;
             }
             
-            ctx.getContentResolver().bulkInsert(dbUri(DBProvider.POLICY_CONTENT_URI), v);
+            nr += ctx.getContentResolver().bulkInsert(dbUri(DBProvider.POLICY_CONTENT_URI), v);
         }
+        
+        return nr;
     }
 }

@@ -24,6 +24,7 @@ import java.util.List;
 import lfapi.v2.schema.Privilege;
 import lfapi.v2.services.LiquidFeedbackServiceFactory;
 import lfapi.v2.services.LiquidFeedbackService.MemberService;
+import lfapi.v2.services.auth.SessionKeyAuthentication;
 import liqui.droid.db.DB;
 import liqui.droid.db.DBProvider;
 
@@ -35,9 +36,14 @@ public class SyncPrivilege extends SyncAbstractTask {
         super(ctx, intent, factory, databaseName, DB.Privilege.TABLE, SYNC_TIME_HOUR_12);
     }
 
-    public void sync(Context ctx, String ids) {
-        MemberService ms = mFactory.createMemberService();
+    public int sync(Context ctx, String ids) {
+        MemberService service = mFactory.createMemberService();
 
+        if (isAuthenticated()) {
+            service.setAuthentication(new SessionKeyAuthentication(getSessionKey()));
+        }
+
+        int nr = 0;
         // int page = 0;
         boolean hasMore = true;
         while (hasMore) {
@@ -48,7 +54,7 @@ public class SyncPrivilege extends SyncAbstractTask {
             
             hasMore = false;
             
-            List<Privilege> l = ms.getPrivilege(null);
+            List<Privilege> l = service.getPrivilege(null);
             
             ContentValues[] v = new ContentValues[l.size()];
             int idx = 0;
@@ -66,7 +72,9 @@ public class SyncPrivilege extends SyncAbstractTask {
                 v[idx++] = values;
             }
 
-            ctx.getContentResolver().bulkInsert(dbUri(DBProvider.PRIVILEGE_CONTENT_URI), v);
+            nr += ctx.getContentResolver().bulkInsert(dbUri(DBProvider.PRIVILEGE_CONTENT_URI), v);
         }
+        
+        return nr;
     }
 }

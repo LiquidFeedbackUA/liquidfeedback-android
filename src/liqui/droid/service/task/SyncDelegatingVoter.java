@@ -24,6 +24,7 @@ import java.util.List;
 import lfapi.v2.schema.Member;
 import lfapi.v2.schema.Vote;
 import lfapi.v2.services.LiquidFeedbackService.VotingService;
+import lfapi.v2.services.auth.SessionKeyAuthentication;
 import lfapi.v2.services.LiquidFeedbackServiceFactory;
 import liqui.droid.Constants;
 import liqui.droid.db.DB;
@@ -38,9 +39,14 @@ public class SyncDelegatingVoter extends SyncAbstractTask {
         super(ctx, intent, factory, databaseName, DB.Vote.DelegatingVoter.TABLE, SYNC_TIME_MIN_15);
     }
 
-    public void sync(Context ctx, String ids) {
-        VotingService vs = mFactory.createVoteService();
+    public int sync(Context ctx, String ids) {
+        VotingService service = mFactory.createVoteService();
 
+        if (isAuthenticated()) {
+            service.setAuthentication(new SessionKeyAuthentication(getSessionKey()));
+        }
+        
+        int nr = 0;
         int page = 0; boolean hasMore = true;
         while (hasMore) {
             Member.Options mo = new Member.Options();
@@ -48,7 +54,7 @@ public class SyncDelegatingVoter extends SyncAbstractTask {
             mo.limit = Constants.LIMIT;
             mo.offset = ((page++) * mo.limit);
             
-            List<Vote.Voter> l = vs.getDelegatingVoter(null, mo);
+            List<Vote.Voter> l = service.getDelegatingVoter(null, mo);
         
             if (l.size() < mo.limit) {
                 hasMore = false;
@@ -68,7 +74,9 @@ public class SyncDelegatingVoter extends SyncAbstractTask {
                 v[idx++] = values;
             }
 
-            ctx.getContentResolver().bulkInsert(dbUri(DBProvider.DELEGATING_VOTER_CONTENT_URI), v);
+            nr += ctx.getContentResolver().bulkInsert(dbUri(DBProvider.DELEGATING_VOTER_CONTENT_URI), v);
         }
+        
+        return nr;
     }
 }

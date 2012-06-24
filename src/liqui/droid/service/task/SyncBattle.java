@@ -23,6 +23,7 @@ import java.util.List;
 
 import lfapi.v2.schema.Initiative;
 import lfapi.v2.services.LiquidFeedbackService.InitiativeService;
+import lfapi.v2.services.auth.SessionKeyAuthentication;
 import lfapi.v2.services.LiquidFeedbackServiceFactory;
 import liqui.droid.Constants;
 import liqui.droid.db.DB;
@@ -36,9 +37,14 @@ public class SyncBattle extends SyncAbstractTask {
         super(ctx, intent, factory, databaseName, DB.Initiative.Battle.TABLE, SYNC_TIME_HOUR_1);
     }
     
-    public void sync(Context ctx, String areaIds) {
+    public int sync(Context ctx, String areaIds) {
         InitiativeService is = mFactory.createInitiativeService();
         
+        if (isAuthenticated()) {
+            is.setAuthentication(new SessionKeyAuthentication(getSessionKey()));
+        }
+
+        int nr = 0;
         int page = 0; boolean hasMore = true;
         while(hasMore) {
             Initiative.Options io = new Initiative.Options();
@@ -65,7 +71,9 @@ public class SyncBattle extends SyncAbstractTask {
                 // println(values.toString());
             }
             
-            ctx.getContentResolver().bulkInsert(dbUri(DBProvider.BATTLE_CONTENT_URI), v);
+            nr += ctx.getContentResolver().bulkInsert(dbUri(DBProvider.BATTLE_CONTENT_URI), v);
         }
+        
+        return nr;
     }
 }

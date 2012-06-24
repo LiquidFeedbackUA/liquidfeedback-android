@@ -19,8 +19,8 @@
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/actionbar"
-        android:background="?attr/info_box">
+        android:padding="10dip"
+        android:layout_below="@id/actionbar" >
     
         <HorizontalScrollView
             android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
             android:id="@+id/tv_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceSubtitle"
+            android:textAppearance="?android:attr/textAppearanceLarge" 
             android:lines="1"
             android:marqueeRepeatLimit="marquee_forever"
             android:scrollHorizontally="true"
@@ -67,9 +67,7 @@
         <Button
             android:id="@+id/btn_account_add"
             android:layout_width="wrap_content"
-            android:layout_margin="0dp"
-            android:textColor="#000000"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:text="@string/account_add" >
         </Button>
     </LinearLayout>

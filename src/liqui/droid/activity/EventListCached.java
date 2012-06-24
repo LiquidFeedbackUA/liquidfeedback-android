@@ -17,7 +17,6 @@
 package liqui.droid.activity;
 
 import lfapi.v2.schema.Event;
-import liqui.droid.Constants;
 import liqui.droid.db.DB2Schema;
 import liqui.droid.db.DBProvider;
 import liqui.droid.holder.BreadCrumbHolder;
@@ -73,13 +72,14 @@ public class EventListCached extends Base implements LoaderCallbacks<Cursor>, On
      * Sets the bread crumbs.
      */
     protected void setBreadCrumbs() {
-        BreadCrumbHolder[] breadCrumbHolders = new BreadCrumbHolder[1];
+        BreadCrumbHolder[] breadCrumbHolders = new BreadCrumbHolder[0];
 
+        /*
         BreadCrumbHolder b = new BreadCrumbHolder();
         b.setLabel(getResources().getString(R.string.title_explore));
         b.setTag(Constants.EXPLORE);
         breadCrumbHolders[0] = b;
-            
+          */  
         createBreadcrumb(getString(R.string.events), breadCrumbHolders);
     }
 
@@ -101,8 +101,7 @@ public class EventListCached extends Base implements LoaderCallbacks<Cursor>, On
 
     @Override
     public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
-        CursorLoader cursorLoader = new CursorLoader(getApplication(), mContentUri, null, null, null, "_id DESC");
-        return cursorLoader;
+        return new CursorLoader(getApplication(), mContentUri, null, null, null, "_id DESC");
     }
 
     @Override
@@ -193,7 +192,7 @@ public class EventListCached extends Base implements LoaderCallbacks<Cursor>, On
             }
             
             PrettyTime pt = new PrettyTime();
-            event += "\n" + pt.format(e.occurrence.toDate());
+            event += " " + pt.format(e.occurrence.toDate());
             
             tvEvent.setText(event);
             tvDesc.setText(desc);

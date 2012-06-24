@@ -47,7 +47,6 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -94,7 +93,6 @@ public class Search extends Base {
         // findViewById(R.id.spinner_language);
         final Spinner searchTypeSpinner = (Spinner) findViewById(R.id.spinner_search_type);
         final EditText etSearchKey = (EditText) findViewById(R.id.et_search);
-        ImageButton btnSearch = (ImageButton) findViewById(R.id.btn_search);
 
         /** event when user press enter button at soft keyboard */
         etSearchKey.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -119,28 +117,6 @@ public class Search extends Base {
                     return true;
                 }
                 return false;
-            }
-        });
-
-        /** Event when user press button image */
-        btnSearch.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                mFirstTimeSearch = true;
-                mPage = 1;// reset to 1;
-                String searchKey = etSearchKey.getText().toString();
-                // String selectedLanguage = (String)
-                // languageSpinner.getSelectedItem();
-                if (searchTypeSpinner.getSelectedItemPosition() == 1) {
-                    mSearchByUser = true;
-                    searchUser(searchKey);
-                } else {
-                    mSearchByUser = false;
-                    // searchRepository(searchKey, selectedLanguage);
-                }
-
-                hideKeyboard(etSearchKey.getWindowToken());
             }
         });
     }

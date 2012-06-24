@@ -24,6 +24,7 @@ import java.util.List;
 import lfapi.v2.schema.Member;
 import lfapi.v2.services.LiquidFeedbackServiceFactory;
 import lfapi.v2.services.LiquidFeedbackService.MemberService;
+import lfapi.v2.services.auth.SessionKeyAuthentication;
 import liqui.droid.Constants;
 import liqui.droid.db.DB;
 import liqui.droid.db.DBProvider;
@@ -36,9 +37,14 @@ public class SyncMemberContact extends SyncAbstractTask {
         super(ctx, intent, factory, databaseName, DB.Member.Contact.TABLE, SYNC_TIME_HOUR_12);
     }
 
-    public void sync(Context ctx, String ids) {
-        MemberService ms = mFactory.createMemberService();
+    public int sync(Context ctx, String ids) {
+        MemberService service = mFactory.createMemberService();
 
+        if (isAuthenticated()) {
+            service.setAuthentication(new SessionKeyAuthentication(getSessionKey()));
+        }
+
+        int nr = 0;
         int page = 0; boolean hasMore = true;
         while (hasMore) {
             Member.Options mo = new Member.Options();
@@ -46,7 +52,7 @@ public class SyncMemberContact extends SyncAbstractTask {
             mo.limit = Constants.LIMIT;
             mo.offset = ((page++) * mo.limit);
             
-            List<Member.Contact> l = ms.getContact(mo);
+            List<Member.Contact> l = service.getContact(mo);
         
             if (l.size() < mo.limit) {
                 hasMore = false;
@@ -64,7 +70,9 @@ public class SyncMemberContact extends SyncAbstractTask {
                 v[idx++] = values;
             }
             
-            ctx.getContentResolver().bulkInsert(dbUri(DBProvider.CONTACT_CONTENT_URI), v);
+            nr += ctx.getContentResolver().bulkInsert(dbUri(DBProvider.CONTACT_CONTENT_URI), v);
         }
+        
+        return nr;
     }
 }

@@ -222,13 +222,14 @@ public class AreaTreeCached extends Base implements OnChildClickListener {
      * Sets the bread crumbs.
      */
     protected void setBreadCrumbs() {
-        BreadCrumbHolder[] breadCrumbHolders = new BreadCrumbHolder[1];
+        BreadCrumbHolder[] breadCrumbHolders = new BreadCrumbHolder[0];
 
+        /*
         BreadCrumbHolder b = new BreadCrumbHolder();
         b.setLabel(getResources().getString(R.string.title_explore));
         b.setTag(Constants.EXPLORE);
         breadCrumbHolders[0] = b;
-            
+          */  
         createBreadcrumb(getString(R.string.units_and_areas), breadCrumbHolders);
     }
 

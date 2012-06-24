@@ -40,6 +40,7 @@ import java.util.concurrent.TimeUnit;
 
 import lfapi.v2.services.LiquidFeedbackServiceFactory;
 import liqui.droid.Constants;
+import liqui.droid.db.DB;
 import liqui.droid.db.DBProvider;
 import liqui.droid.service.task.SyncAbstractTask;
 import liqui.droid.service.task.SyncArea;
@@ -72,6 +73,8 @@ import liqui.droid.service.task.SyncVoter;
 public class SyncService extends BaseService {
 
     private static final String TAG = "SyncService";
+    
+    boolean mIsFinished = false;
     
     public static final int STATUS_RUNNING  = 0x1;
     public static final int STATUS_ERROR    = 0x2;
@@ -141,9 +144,14 @@ public class SyncService extends BaseService {
         
         final ResultReceiver receiver = intent.getParcelableExtra(EXTRA_STATUS_RECEIVER);
         if (receiver != null) receiver.send(STATUS_RUNNING, Bundle.EMPTY);
-        
+
+        long startTime = System.currentTimeMillis();
+        long syncRunId = saveSyncRun(this, getAPIDB(), startTime);
+
         try {
+            
             for (SyncAbstractTask task : mTasks) {
+                task.setSyncRunId(syncRunId);
                 mExecutor.execute(task);
             }
             
@@ -166,14 +174,20 @@ public class SyncService extends BaseService {
 
         Log.d(TAG, "sync finished");
 
+        int failed = 0;
         for (SyncAbstractTask task : mTasks) {
             if (task.hasException()) {
                 Log.d(TAG, "Exception: " + task.getException());
+                failed++;
             }
         }
 
+        updateSyncRun(this, getAPIDB(), syncRunId, failed, startTime);
+
         // Announce success to any surface listener
         if (receiver != null) receiver.send(STATUS_FINISHED, Bundle.EMPTY);
+        
+        mIsFinished = true;
     }
     
     public static long lastSyncError(Context ctx, String databaseName) {
@@ -247,10 +261,49 @@ public class SyncService extends BaseService {
         Uri uri = DBProvider.UPDATED_CONTENT_URI.buildUpon().appendQueryParameter("db", databaseName).build();
         context.getContentResolver().insert(uri, values);
     }
+    
+    public static void updateSyncRun(Context context, String databaseName, Long syncRunId, Integer failed, long startTime) {
+        
+        
+        ContentValues values = new ContentValues();
+        
+        values.put(DB.SyncRun.COLUMN_ID, syncRunId);
+        values.put(DB.SyncRun.COLUMN_SYNC_FAIL, failed);
+        values.put(DB.SyncRun.COLUMN_SYNC_DURATION, System.currentTimeMillis() - startTime);
+
+        Uri uri = DBProvider.SYNC_RUN_CONTENT_URI.buildUpon().appendQueryParameter("db", databaseName).build();
+        
+        context.getContentResolver().update(uri, values, "_id = ?", new String[] { String.valueOf(syncRunId) });
+    }
+    
+    public static long saveSyncRun(Context context, String databaseName, long startTime) {
+        ContentValues values = new ContentValues();
+        
+        values.put(DB.SyncRun.COLUMN_SYNC_TIME, startTime);
+
+        Uri uri = DBProvider.SYNC_RUN_CONTENT_URI.buildUpon().appendQueryParameter("db", databaseName).build();
+        
+        return Long.parseLong(context.getContentResolver().insert(uri, values).getLastPathSegment());
+    }
+
+    public static void saveSyncStat(Context context, String databaseName, SyncAbstractTask.SyncStat value) {
+        ContentValues values = new ContentValues();
+        
+        values.put(DB.SyncStat.COLUMN_SYNC_RUN_ID,    value.syncRunId);
+        values.put(DB.SyncStat.COLUMN_SYNC_TABLE,     value.tableName);
+        values.put(DB.SyncStat.COLUMN_SYNC_EXCEPTION, value.syncException);
+        
+        values.put(DB.SyncStat.COLUMN_SYNC_ADDED,   value.syncAdded);
+        values.put(DB.SyncStat.COLUMN_SYNC_UPDATED, value.syncUpdated);
+        values.put(DB.SyncStat.COLUMN_SYNC_DELETED, value.syncDeleted);
+        
+        Uri uri = DBProvider.SYNC_STAT_CONTENT_URI.buildUpon().appendQueryParameter("db", databaseName).build();
+        context.getContentResolver().insert(uri, values);
+    }
 
     @Override
     protected boolean isFinished() {
-        return mExecutor.isTerminated();
+        return mIsFinished;
     }
 
     public static long lastUpdate(Context context, String databaseName, String table) {

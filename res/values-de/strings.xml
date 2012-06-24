@@ -43,7 +43,8 @@
 	
 	<!-- Accounts -->
 	<string name="account_add">Konto hinzufügen</string>
-	
+	<string name="account_ctx_sync_stat">Sync-Statistik</string>
+		
 	<!-- LQFB  -->
     <string name="lqfb_name">Name der Instanz</string>
 	<string name="lqfb_web_url">Web URL, z.B. http://host/lf2/</string>
@@ -57,7 +58,7 @@
     <string name="lqfb_invalid_api_key">Ungültiger API-Schlüssel</string>
     
     <!-- AreaTreeCachedActivity -->
-    <string name="units_and_areas">Gliederungen &amp; Themenbereiche</string>
+    <string name="units_and_areas">Themenbereiche</string>
     
     <!-- BaseActivity -->
     <string name="successful_signout">Erfolgreich abgemeldet</string>
@@ -65,21 +66,24 @@
     <!-- ContactsListCached -->
     <string name="contacts">Kontakte</string>
     
-    <!-- EventsListCachedActivity -->
+    <!-- EventsListCached -->
     <string name="events">Ereignisse</string>
     
-    <!-- LQFBListCachedActivity / LQFBEditActivity-->
-    <string name="lqfb_edit_instances">Editiere LiquidFeedback Instanzen</string>
+    <!-- LQFBListCached / LQFBEdit -->
+    <string name="lqfb_edit_instances">Instanzen</string>
     <string name="insert">Einfügen</string>
     <string name="delete">Löschen</string>
     <string name="duplicate">Kopieren</string>
     <string name="saved_changes">Änderungen gespeichert</string>
     
-    <!-- MemberListCachedActivity -->
+    <!-- MemberListCached -->
     <string name="members">Mitglieder</string>
     <string name="member_api_key">API-Schlüssel</string>
     <string name="member_sign_in">Anmelden</string>
 
+    <!-- MemberDetails -->
+    <string name="member">Mitglied</string>
+    
     <!--  Activity IssueTreeCachedActivity -->
     <string name="issues">Themen</string>
     <string name="issues_open">Offene</string>
@@ -117,4 +121,8 @@
     <!-- Search -->
     <string name="search">Suche</string>
     <string name="search_type_to_filter">Suche..</string>
+
+    <!-- SyncStat -->
+    <string name="sync_stat_statistics">Sync-Statistik</string>
+
 </resources>

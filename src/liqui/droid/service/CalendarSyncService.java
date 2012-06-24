@@ -17,6 +17,7 @@
 package liqui.droid.service;
 
 import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.accounts.OperationCanceledException;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
@@ -35,27 +36,38 @@ import android.provider.BaseColumns;
 import android.provider.CalendarContract;
 import android.provider.CalendarContract.Calendars;
 import android.provider.CalendarContract.Events;
+import android.util.Log;
+
+import org.joda.time.DateTime;
+import org.ocpsoft.pretty.time.PrettyTime;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+import liqui.droid.Constants;
+import liqui.droid.db.DB;
+import liqui.droid.db.DBProvider;
 
 /**
  * The Class CalendarSyncService.
  */
 public class CalendarSyncService extends BaseService {
     
+    private static boolean mSyncRunning = true;
+    
     private static SyncAdapterImpl sSyncAdapter = null;
     
     private static ContentResolver mContentResolver = null;
     
-    private static Integer syncSchema = 1;
-
     public CalendarSyncService() {
         super("CalendarSyncService");
     }
 
-    private static class SyncAdapterImpl extends AbstractThreadedSyncAdapter {
+    private class SyncAdapterImpl extends AbstractThreadedSyncAdapter {
         private Context mContext;
 
         public SyncAdapterImpl(Context context) {
@@ -66,7 +78,7 @@ public class CalendarSyncService extends BaseService {
         @Override
         public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
             try {
-                CalendarSyncService.performSync(mContext, account, extras, authority, provider, syncResult);
+                CalendarSyncService.this.performSync(mContext, account, extras, authority, provider, syncResult);
             } catch (OperationCanceledException e) {
             }
         }
@@ -88,13 +100,18 @@ public class CalendarSyncService extends BaseService {
     private static long getCalendar(Account account) {
         
         // Find the LiquiDroid calendar if we've got one
-        Uri calenderUri = Calendars.CONTENT_URI.buildUpon().appendQueryParameter(Calendars.ACCOUNT_NAME, account.name).appendQueryParameter(
-                Calendars.ACCOUNT_TYPE, account.type).build();
+        Uri calenderUri = Calendars.CONTENT_URI.buildUpon()
+                .appendQueryParameter(Calendars.ACCOUNT_NAME, account.name)
+                .appendQueryParameter(Calendars.ACCOUNT_TYPE, account.type)
+                .appendQueryParameter("account_name", account.name)
+                .appendQueryParameter("account_type", account.type)
+                .build();
         
         
         Cursor c1 = mContentResolver.query(calenderUri, new String[] { BaseColumns._ID }, null, null, null);
 
-        if (c1.moveToNext()) {
+        if (c1.moveToNext() && !c1.isAfterLast()) {
+            Log.d("XXXXXXX", "id = " + c1.getLong(0));
             return c1.getLong(0);
         } else {
             ArrayList<ContentProviderOperation> operationList = new ArrayList<ContentProviderOperation>();
@@ -109,11 +126,13 @@ public class CalendarSyncService extends BaseService {
             builder.withValue(Calendars.ACCOUNT_TYPE, account.type);
             builder.withValue(Calendars.NAME, "LiquiDroid Events");
             builder.withValue(Calendars.CALENDAR_DISPLAY_NAME, "LiquiDroid Events");
-            builder.withValue(Calendars.CALENDAR_COLOR, 0xD51007);
+            builder.withValue(Calendars.CALENDAR_COLOR, -5159922); // orange
             builder.withValue(Calendars.CALENDAR_ACCESS_LEVEL, Calendars.CAL_ACCESS_READ);
             builder.withValue(Calendars.OWNER_ACCOUNT, account.name);
             builder.withValue(Calendars.SYNC_EVENTS, 1);
             operationList.add(builder.build());
+            
+            Log.d("XXX", builder.build().toString());
             
             try {
                 mContentResolver.applyBatch(CalendarContract.AUTHORITY, operationList);
@@ -146,57 +165,60 @@ public class CalendarSyncService extends BaseService {
     }
     
     public static class Event {
+        public Date startDate;
+        public String title;
+        
         public static class Location {
             String getCity() {
-                return null;
+                return "Augsburg";
             }
             
             String getCountry() {
-                return null;
+                return "Germany";
             }
         }
         public static class Venue {
             String getName() {
-                return null;
+                return "Venue";
             }
             
             Location getLocation() {
-                return null;
+                return new Location();
             }
-            
-            
         }
         
         Date getStartDate() {
-            return null;
+            return startDate;
+//            return new Date(2012, 06, 23, 20, 30);
         }
         
         Date getEndDate() {
             return null;
+//            return new Date(2012, 06, 23, 21, 30);
         }
         
         String getTitle() {
-            return null;
+            return title;
         }
         
         Venue getVenue() {
-            return null;
+            return new Venue();
         }
         
         String[] getArtists() {
-            return null;
+            return new String[] { "Jakob Flierl" };
         }
         
         String getDescription() {
-            return null;
+            return "Description";
         }
         
         int getStatus() {
-            return 0;
+            return 2;
         }
         
         long getId() {
-            return 0;
+            return 42;
         }
         
     }
@@ -267,27 +289,38 @@ public class CalendarSyncService extends BaseService {
         public Long raw_id = 0L;
     }
     
-    private static void performSync(Context context, Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult)
+    public void performSync(Context context, Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult)
             throws OperationCanceledException {
+
+        AccountManager am = AccountManager.get(context);
+        
+        mApiName     = am.getUserData(account, Constants.Account.API_NAME);
+        mApiUrl      = am.getUserData(account, Constants.Account.API_URL);
+        mMemberId    = am.getUserData(account, Constants.Account.MEMBER_ID);
+        mSessionKey  = am.getUserData(account, Constants.Account.SESSION_KEY);
+        
+        mIntent = new Intent();
+        Bundle b = new Bundle();
+        b.putString(Constants.Account.API_NAME,    mApiName);
+        b.putString(Constants.Account.API_URL,     mApiUrl);
+        b.putString(Constants.Account.MEMBER_ID,   mMemberId);
+        b.putString(Constants.Account.SESSION_KEY, mSessionKey);
+        mIntent.putExtras(b);
+        
+        Log.i("XXX", "performSync: " + account.toString() + "bundle: " + b.toString() );
+        
         HashMap<Long, SyncEntry> localEvents = new HashMap<Long, SyncEntry>();
-        ArrayList<Long> lastfmEvents = new ArrayList<Long>();
+        ArrayList<Long> lqfbEvents = new ArrayList<Long>();
         mContentResolver = context.getContentResolver();
 
-        /* FIXME
-        //If our app has requested a full sync, we're going to delete all our local events and start over
-        boolean is_full_sync = PreferenceManager.getDefaultSharedPreferences(LastFMApplication.getInstance()).getBoolean("cal_do_full_sync", false);
-        
-        //If our schema is out-of-date, do a fresh sync
-        if(PreferenceManager.getDefaultSharedPreferences(LastFMApplication.getInstance()).getInt("cal_sync_schema", 0) < syncSchema)
-            is_full_sync = true;
+        boolean is_full_sync = true;
         
         long calendar_id = getCalendar(account);
-        if(calendar_id == -1) {
+        if (calendar_id == -1) {
             Log.e("CalendarSyncAdapter", "Unable to create LiquiDroid calendar");
             return;
-        }*/
+        }
         
-        /*
         // Load the local Last.fm events
         Cursor c1 = mContentResolver.query(Events.CONTENT_URI.buildUpon().appendQueryParameter(Events.ACCOUNT_NAME, account.name).appendQueryParameter(Events.ACCOUNT_TYPE, account.type).build(), new String[] { Events._ID, Events._SYNC_ID }, Events.CALENDAR_ID + "=?", new String[] { String.valueOf(calendar_id) }, null);
         while (c1 != null && c1.moveToNext()) {
@@ -301,38 +334,41 @@ public class CalendarSyncService extends BaseService {
         }
         c1.close();
 
+        /*
         Editor editor = PreferenceManager.getDefaultSharedPreferences(LastFMApplication.getInstance()).edit();
         editor.remove("cal_do_full_sync");
         editor.putInt("cal_sync_schema", syncSchema);
         editor.commit();
+        */
         
-        LastFmServer server = AndroidLastFmServerFactory.getServer();
         try {
-            Event[] events = server.getUserEvents(account.name);
-            ArrayList<ContentProviderOperation> operationList = new ArrayList<ContentProviderOperation>();
-            for (Event event : events) {
-                lastfmEvents.add(Long.valueOf(event.getId()));
+            Uri ISSUES_URI = dbUri(DBProvider.EVENT_CONTENT_URI);
+            Cursor c = getContentResolver().query(ISSUES_URI, null, null, null, null);
 
-                if (localEvents.containsKey(Long.valueOf(event.getId()))) {
-                    SyncEntry entry = localEvents.get(Long.valueOf(event.getId()));
-                    operationList.add(updateEvent(calendar_id, account, event, entry.raw_id));
-                } else {
-                    operationList.add(updateEvent(calendar_id, account, event, -1));
-                }
+            List<Event> es = new LinkedList<Event>();
+            
+            c.moveToFirst();
+            while (!c.isAfterLast()) {
+                String eventId      = c.getString(c.getColumnIndex(DB.Event.COLUMN_ID));
+                String event        = c.getString(c.getColumnIndex(DB.Event.COLUMN_EVENT));
+                Long   eventCreated = c.getLong(c.getColumnIndex(DB.Event.COLUMN_OCCURRENCE));
 
-                if(operationList.size() >= 50) {
-                    try {
-                        mContentResolver.applyBatch(CalendarContract.AUTHORITY, operationList);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    operationList.clear();
-                }
+                PrettyTime pt = new PrettyTime();
+                
+                Log.d("XXXXXX", "Event " + eventId + ": " + event +
+                        " created " + pt.format(new DateTime(eventCreated).toDate()));
+                
+                Event e = new Event();
+                e.startDate = new DateTime(eventCreated).toDate();
+                e.title = "Event " + eventId + ": " + event;
+                es.add(e);
+                c.moveToNext();
             }
 
-            events = server.getPastUserEvents(account.name);
-            for (Event event : events) {
-                lastfmEvents.add(Long.valueOf(event.getId()));
+            // Event[] events = server.getUserEvents(account.name);
+            ArrayList<ContentProviderOperation> operationList = new ArrayList<ContentProviderOperation>();
+            for (Event event : es) {
+                lqfbEvents.add(Long.valueOf(event.getId()));
 
                 if (localEvents.containsKey(Long.valueOf(event.getId()))) {
                     SyncEntry entry = localEvents.get(Long.valueOf(event.getId()));
@@ -358,24 +394,22 @@ public class CalendarSyncService extends BaseService {
                     e.printStackTrace();
                 }
             }
-        } catch (IOException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        } catch (WSError e1) {
-            // TODO Auto-generated catch block
+        } catch (Exception e1) {
             e1.printStackTrace();
         }
         
         Iterator<Long> i = localEvents.keySet().iterator();
         while(i.hasNext()) {
             Long event = i.next();
-            if(!lastfmEvents.contains(event))
+            if(!lqfbEvents.contains(event))
                 deleteEvent(context, account, localEvents.get(event).raw_id);
-        }*/
+        }
+        
+        mSyncRunning = false;
     }
 
     @Override
     protected boolean isFinished() {
-        return true;
+        return mSyncRunning;
     }
 }

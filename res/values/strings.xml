@@ -15,7 +15,7 @@
     <string name="action_login_sync">liqui.droid.sync.LOGIN</string>
     
     <!-- Titles -->
-    <string name="title_sign_in">Login</string>
+    <string name="title_sign_in">Sign in</string>
     <string name="title_explore">Explore</string>
     <string name="title_share">Share</string>
     
@@ -44,6 +44,7 @@
 	
 	<!-- Accounts -->
 	<string name="account_add">Add account</string>
+	<string name="account_ctx_sync_stat">Sync statistics</string>
 	
     <!-- LiquiDroid  -->
     <string name="lqfb_name">Instance Name</string>
@@ -57,28 +58,31 @@
     <string name="lqfb_signing_in">Signing in&#8230;</string>
     <string name="lqfb_invalid_api_key">Invalid API key</string>
     
-    <!-- AreaTreeCachedActivity -->
+    <!-- AreaTreeCached -->
     <string name="units_and_areas">Units &amp; Areas</string>
     
     <!-- ContactsListCached -->
     <string name="contacts">Contacts</string>
     
-    <!-- EventsListCachedActivity -->
+    <!-- EventsListCached -->
     <string name="events">Events</string>
     
-    <!-- LQFBListCachedActivity / LQFBEditActivity -->
-    <string name="lqfb_edit_instances">Edit LiquidFeedback instances</string>
+    <!-- LQFBListCached / LQFBEdit -->
+    <string name="lqfb_edit_instances">Instances</string>
     <string name="insert">Insert</string>
     <string name="delete">Delete</string>
     <string name="duplicate">Duplicate</string>
     <string name="saved_changes">Saved changes</string>
     
-    <!-- MemberListCachedActivity -->
+    <!-- MemberListCached -->
     <string name="members">Members</string>
     <string name="member_api_key">API key</string>
     <string name="member_sign_in">Sign in</string>
     
-    <!--  Activity IssueTreeCachedActivity -->
+    <!-- MemberDetails -->
+    <string name="member">Member</string>
+    
+    <!-- IssueTreeCached -->
     <string name="issues">Issues</string>
     <string name="issues_open">Open</string>
     <string name="issues_closed">Closed</string>
@@ -109,6 +113,9 @@
     <!-- Search -->
     <string name="search">Search</string>
     <string name="search_type_to_filter">type to filter</string>
+    
+    <!-- SyncStat -->
+    <string name="sync_stat_statistics">Sync statistics</string>
 
     <!-- Common -->
     
@@ -143,7 +150,7 @@
     <string name="user_login">Sign in</string>
     <string name="user_name">Name</string>
     
-    <string name="user_identification">Idenfitication</string>
+    <string name="user_identification">Identification</string>
     <string name="user_organization">Organization</string>
     <string name="user_realname">Realname</string>
     <string name="user_birthday">Birthday</string>

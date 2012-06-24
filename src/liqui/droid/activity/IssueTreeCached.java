@@ -207,19 +207,20 @@ public class IssueTreeCached extends Base implements OnClickListener, OnChildCli
      * Sets the bread crumbs.
      */
     protected void setBreadCrumbs() {
-        BreadCrumbHolder[] breadCrumbHolders = new BreadCrumbHolder[1];
+        BreadCrumbHolder[] breadCrumbHolders = new BreadCrumbHolder[0];
 
+        /*
         BreadCrumbHolder b = new BreadCrumbHolder();
         b.setLabel(getString(R.string.title_explore));
         b.setTag(Constants.EXPLORE);
         breadCrumbHolders[0] = b;
-        
+        */
         String issues = "";
         
         issues += ("open".equals(mTab) ? getString(R.string.issues_open) + " " : "");
         issues += ("closed".equals(mTab) ? getString(R.string.issues_closed) + " " : "");
                
-        issues += getString(R.string.issues) + (mUnitName != null ? " - " + mUnitName : "");
+        issues += (mUnitName != null ? mUnitName : getString(R.string.issues));
         
         if (mAreaId != null) {
             String areaName = queryString(dbUri(DBProvider.AREA_CONTENT_URI),
@@ -346,13 +347,13 @@ public class IssueTreeCached extends Base implements OnClickListener, OnChildCli
             String issue_state      = cursor.getString(cursor.getColumnIndex("issue_state"));
             Integer policy_id       = cursor.getInt(cursor.getColumnIndex("policy_id"));
             
-            // Long created         = cursor.getLong(cursor.getColumnIndex("issue_created"));
+            Long created         = cursor.getLong(cursor.getColumnIndex("issue_created"));
             Long accepted        = cursor.getLong(cursor.getColumnIndex("issue_accepted"));
             Long half_frozen     = cursor.getLong(cursor.getColumnIndex("issue_half_frozen"));
             Long fully_frozen    = cursor.getLong(cursor.getColumnIndex("issue_fully_frozen"));
             Long closed          = cursor.getLong(cursor.getColumnIndex("issue_closed"));
             // Long cleaned         = cursor.getLong(cursor.getColumnIndex("issue_cleaned"));
-            Long admission_time  = cursor.getLong(cursor.getColumnIndex("issue_admission_time"));
+            // Long admission_time  = cursor.getLong(cursor.getColumnIndex("issue_admission_time"));
             // Long discussion_time = cursor.getLong(cursor.getColumnIndex("issue_discussion_time"));
             // Long voting_time     = cursor.getLong(cursor.getColumnIndex("issue_voting_time"));
             // Long snapshot        = cursor.getLong(cursor.getColumnIndex("issue_snapshot"));
@@ -405,7 +406,7 @@ public class IssueTreeCached extends Base implements OnClickListener, OnChildCli
             if (DB.Issue.STATE_ADMISSION.equals(issue_state)) {
                 state += getString(R.string.issue_state_new);
                 ivState.setImageResource(R.drawable.ic_script);
-                state += " " + pt.format(new DateTime(admission_time).plus(
+                state += " " + pt.format(new DateTime(created).plus(
                         new Interval(policy_admission_time).getPeriod()).toDate());
             } else if (DB.Issue.STATE_DISCUSSION.equals(issue_state)) {
                 ivState.setImageResource(R.drawable.ic_script);

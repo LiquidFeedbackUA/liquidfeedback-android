@@ -24,6 +24,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -198,6 +199,7 @@ public class ActionBar extends RelativeLayout implements OnClickListener {
 
         ImageButton labelView = (ImageButton) view.findViewById(R.id.actionbar_item);
         labelView.setImageResource(action.getDrawable());
+        labelView.setBackgroundColor(Color.TRANSPARENT);
 
         view.setTag(action);
         view.setOnClickListener(this);

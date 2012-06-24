@@ -96,13 +96,15 @@ public class Initiative extends Base {
      * Sets the bread crumbs.
      */
     protected void setBreadCrumbs() {
-        BreadCrumbHolder[] breadCrumbHolders = new BreadCrumbHolder[1];
+        BreadCrumbHolder[] breadCrumbHolders = new BreadCrumbHolder[0];
 
+        /*
         BreadCrumbHolder b = new BreadCrumbHolder();
         b.setLabel(getResources().getString(R.string.title_explore));
         b.setTag(Constants.EXPLORE);
         breadCrumbHolders[0] = b;
-
+         */
+        
         Cursor c = getContentResolver().query(dbUri(DBProvider.INITIATIVE_CONTENT_URI), null, "_id = ?", new String[] { mInitiativeId }, null);
         c.moveToFirst();
         String issueId = c.getString(c.getColumnIndex(DB.Initiative.COLUMN_ISSUE_ID));

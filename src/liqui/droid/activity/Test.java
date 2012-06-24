@@ -23,8 +23,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -63,12 +63,7 @@ public class Test extends Base implements LoaderCallbacks<Cursor>, OnItemClickLi
 
         createBreadcrumb(getResources().getString(R.string.title_explore), (BreadCrumbHolder[]) null);
         
-        String calendarLocation;
-        if (Build.VERSION.SDK_INT >= 8) {
-            calendarLocation = "content://com.android.calendar/"; 
-        } else {
-            calendarLocation = "content://calendar/";
-        }
+        String calendarLocation = CalendarContract.CONTENT_URI.toString();
         
         mCalendarsUri = Uri.parse(calendarLocation + "calendars");
         mEventsUri    = Uri.parse(calendarLocation + "events");
@@ -179,7 +174,7 @@ public class Test extends Base implements LoaderCallbacks<Cursor>, OnItemClickLi
     @Override
     public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
         CursorLoader cursorLoader = new CursorLoader(getApplication(), mCalendarsUri,
-                new String[] { "_id", "displayName", "selected" }, "selected = 1", null, null);
+                new String[] { "_id", CalendarContract.Calendars.NAME, "selected" }, "selected = 1", null, null);
         
         return cursorLoader;
     }

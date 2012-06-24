@@ -5,8 +5,8 @@
     android:versionName="2.01" >
 
     <uses-sdk
-        android:targetSdkVersion="10"
-        android:minSdkVersion="9" />
+        android:targetSdkVersion="15"
+        android:minSdkVersion="15" />
     <supports-screens android:anyDensity="true" />
     
     <uses-permission
@@ -134,6 +134,9 @@
             android:configChanges="orientation" />
         <activity
             android:name=".activity.Search"
+            android:configChanges="orientation" />
+        <activity
+            android:name=".activity.SyncStatListCached"
             android:configChanges="orientation" />
         <activity
             android:name=".activity.Test"

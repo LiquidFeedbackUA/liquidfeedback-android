@@ -247,6 +247,8 @@ public class MemberActivity extends Base implements OnClickListener, OnItemClick
     @Override
     public boolean setMenuOptionItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            
+            /*
             case R.id.menu_profile:
                 Intent intent = new Intent().setClass(this, MemberEdit.class);
 
@@ -259,6 +261,7 @@ public class MemberActivity extends Base implements OnClickListener, OnItemClick
                 
                 startActivity(intent);
                 return true;
+                */
             default:
                 return true;
         }

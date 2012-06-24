@@ -189,9 +189,11 @@ public abstract class Base extends FragmentActivity implements DetachableResultR
             startActivity(intentLQFBEdit);
             overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
             return true;
+            /*
         case R.id.menu_contacts:
             openContacts();
             return true;
+            */
         case R.id.menu_refresh:
             triggerRefresh();
             return true;
@@ -237,6 +239,7 @@ public abstract class Base extends FragmentActivity implements DetachableResultR
         overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
     }
 
+    @SuppressWarnings("unused")
     private void openContacts() {
         final Intent intent = new Intent(Intent.ACTION_VIEW, null, Base.this, ContactListCached.class);
         
@@ -291,7 +294,7 @@ public abstract class Base extends FragmentActivity implements DetachableResultR
                 tvBreadCrumb.append(part);
                 tvBreadCrumb.setTag(breadCrumbHolders[i]);
                 tvBreadCrumb.setBackgroundResource(R.drawable.default_link);
-                tvBreadCrumb.setTextAppearance(getApplication(), R.style.default_text_small);
+                tvBreadCrumb.setTextAppearance(getApplication(), android.R.style.TextAppearance_DeviceDefault_Medium);
                 tvBreadCrumb.setSingleLine(true);
                 tvBreadCrumb.setOnClickListener(new OnClickBreadCrumb(this));
     
@@ -300,7 +303,7 @@ public abstract class Base extends FragmentActivity implements DetachableResultR
                 if (i < breadCrumbHolders.length - 1) {
                     TextView slash = new TextView(getApplication());
                     slash.setText(" / ");
-                    slash.setTextAppearance(getApplication(), R.style.default_text_small);
+                    slash.setTextAppearance(getApplication(), android.R.style.TextAppearance_DeviceDefault_Medium);
                     llPart.addView(slash);
                 }
             }
@@ -345,14 +348,11 @@ public abstract class Base extends FragmentActivity implements DetachableResultR
         
         actionBar = (ActionBar) findViewById(R.id.actionbar);
 
-        if (this instanceof LiquiDroid) {
-            actionBar.setTitle(R.string.title_sign_in);
-            return;
-        }
-        
         if (this instanceof LQFBListCached
                 || this instanceof LQFBEdit
-                || this instanceof Accounts) {
+                || this instanceof Accounts
+                || this instanceof LiquiDroid
+                || this instanceof SyncStatListCached) {
             actionBar.setTitle(R.string.app_name);
         } else {       
             actionBar.setTitle(getAPIName());
@@ -748,6 +748,8 @@ public abstract class Base extends FragmentActivity implements DetachableResultR
               if (resultCode == Activity.RESULT_OK) { 
               
                       Account account = intent.getParcelableExtra(Constants.Account.NAME);
+                      
+                      if (account == null) return;
                       
                       AccountManager am = AccountManager.get(this);
                       

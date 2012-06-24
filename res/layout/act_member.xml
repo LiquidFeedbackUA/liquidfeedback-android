@@ -24,8 +24,7 @@
             android:orientation="vertical">
             <RelativeLayout
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:background="?attr/info_box">
+                android:layout_height="fill_parent" >
                 <ImageButton
                     android:id="@+id/iv_gravatar"
                     android:clickable="true"
@@ -33,8 +32,10 @@
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_marginRight="5dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_marginBottom="5dp"
-                    android:layout_marginTop="5dp" />
+                    android:layout_marginTop="5dp"
+                    />
                 <LinearLayout
                     android:id="@+id/ll_user_info"
                     android:layout_height="fill_parent"
@@ -45,7 +46,8 @@
                         android:id="@+id/tv_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceLarge" />
+                        android:layout_marginTop="5dp"
+                        android:textAppearance="?android:attr/textAppearanceMedium" />
                     <TextView
                         android:id="@+id/tv_created_at"
                         android:layout_width="match_parent"
@@ -55,29 +57,25 @@
                         android:id="@+id/tv_email"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
                         android:autoLink="email" />
                     <TextView
                         android:id="@+id/tv_website"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
                         android:autoLink="web" />
                     <TextView
                         android:id="@+id/tv_company"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                        android:textAppearance="?android:attr/textAppearanceSmall" />
                     <TextView
                         android:id="@+id/tv_location"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
                         android:autoLink="map" />
-                    <View
-                        android:id="@+id/separator"
-                        android:layout_width="fill_parent"
-                        android:layout_height="5dp" />
                 </LinearLayout>
             </RelativeLayout>
             </LinearLayout>

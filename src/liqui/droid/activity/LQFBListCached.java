@@ -140,7 +140,7 @@ public class LQFBListCached extends Base
                 ContentValues values = new ContentValues();
                 values.put(DBSystem.TableLQFBs.COLUMN_NAME,    c.getString(c.getColumnIndex(DBSystem.TableLQFBs.COLUMN_NAME)));
                 values.put(DBSystem.TableLQFBs.COLUMN_URL,     c.getString(c.getColumnIndex(DBSystem.TableLQFBs.COLUMN_URL)));
-                values.put(DBSystem.TableLQFBs.COLUMN_WEB_URL,     c.getString(c.getColumnIndex(DBSystem.TableLQFBs.COLUMN_WEB_URL)));
+                values.put(DBSystem.TableLQFBs.COLUMN_WEB_URL, c.getString(c.getColumnIndex(DBSystem.TableLQFBs.COLUMN_WEB_URL)));
                 values.put(DBSystem.TableLQFBs.COLUMN_API_KEY, c.getString(c.getColumnIndex(DBSystem.TableLQFBs.COLUMN_API_KEY)));
                 c.close();
                 getContentResolver().insert(DBSystemProvider.LQFBS_CONTENT_URI, values);

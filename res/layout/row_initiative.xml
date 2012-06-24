@@ -9,10 +9,10 @@
 
     <ImageView
         android:id="@+id/iv_initiative"
-        android:layout_width="30dip"
-        android:layout_height="30dip"
+        android:layout_width="23dip"
+        android:layout_height="20dip"
         android:layout_gravity="center_vertical"
-        android:padding="3dip"
+        android:padding="4dip"
         android:src="@drawable/ic_application_form" />
     
   <LinearLayout
@@ -29,7 +29,7 @@
 
         <TextView
             android:id="@+id/tv_initiative_name"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="0dip"

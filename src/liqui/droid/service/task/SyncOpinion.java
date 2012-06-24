@@ -24,6 +24,7 @@ import java.util.List;
 import lfapi.v2.schema.Opinion;
 import lfapi.v2.services.LiquidFeedbackServiceFactory;
 import lfapi.v2.services.LiquidFeedbackService.SuggestionService;
+import lfapi.v2.services.auth.SessionKeyAuthentication;
 import liqui.droid.Constants;
 import liqui.droid.db.DB;
 import liqui.droid.db.DBProvider;
@@ -36,16 +37,21 @@ public class SyncOpinion extends SyncAbstractTask {
         super(ctx, intent, factory, databaseName, DB.Opinion.TABLE, SYNC_TIME_MIN_15);
     }
 
-    public void sync(Context ctx, String ids) {
-        SuggestionService ss = mFactory.createSuggestionService();
+    public int sync(Context ctx, String ids) {
+        SuggestionService service = mFactory.createSuggestionService();
         
+        if (isAuthenticated()) {
+            service.setAuthentication(new SessionKeyAuthentication(getSessionKey()));
+        }
+
+        int nr = 0;
         int page = 0; boolean hasMore = true;
         while(hasMore) {
             Opinion.Options oo = new Opinion.Options();
             oo.limit = Constants.LIMIT;
             oo.offset = ((page++) * oo.limit);
             
-            List<Opinion> l = ss.getOpinion(oo, null, null, null, null);
+            List<Opinion> l = service.getOpinion(oo, null, null, null, null);
         
             if (l.size() < oo.limit) {
                 hasMore = false;
@@ -63,7 +69,9 @@ public class SyncOpinion extends SyncAbstractTask {
                 v[idx++] = values;
             }
 
-            ctx.getContentResolver().bulkInsert(dbUri(DBProvider.OPINION_CONTENT_URI), v);
+            nr += ctx.getContentResolver().bulkInsert(dbUri(DBProvider.OPINION_CONTENT_URI), v);
         }
+        
+        return nr;
     }
 }

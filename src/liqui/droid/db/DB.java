@@ -27,7 +27,72 @@ public class DB extends SQLiteOpenHelper {
     
     protected String mDatabaseName;
     
-    protected static final int VERSION = 52;
+    protected static final int VERSION = 56;
+    
+    public static class SyncRun {
+        public static final String TABLE = "sync_run";
+        public static final String COLUMN_ID            = "_id";
+        public static final String COLUMN_SYNC_TIME     = "sync_time";
+        public static final String COLUMN_SYNC_DURATION = "sync_duration";
+        public static final String COLUMN_SYNC_FAIL     = "sync_fail";
+        
+        public static final String[] COLUMNS = new String[] {
+            COLUMN_ID,
+            COLUMN_SYNC_TIME,
+            COLUMN_SYNC_DURATION,
+            COLUMN_SYNC_FAIL
+        };
+        
+        public static void onCreate(SQLiteDatabase db) {
+            db.execSQL("CREATE TABLE " + TABLE + " (" +
+                    COLUMN_ID + "             INTEGER    NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_SYNC_TIME + "      TIMESTAMP  NOT NULL                          , " +
+                    COLUMN_SYNC_DURATION + "  INTEGER                                      , " +
+                    COLUMN_SYNC_FAIL + "      INTEGER                                       " +
+                    ");");
+        }
+        
+        public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE); onCreate(db);
+        }
+    }
+
+    public static class SyncStat {
+        public static final String TABLE = "sync_stat";
+        public static final String COLUMN_ID             = "_id";
+        public static final String COLUMN_SYNC_TABLE     = "sync_table";
+        public static final String COLUMN_SYNC_RUN_ID    = "sync_run_id";
+        public static final String COLUMN_SYNC_EXCEPTION = "sync_exception";
+        public static final String COLUMN_SYNC_ADDED     = "sync_added";
+        public static final String COLUMN_SYNC_UPDATED   = "sync_updated";
+        public static final String COLUMN_SYNC_DELETED   = "sync_deleted";
+        
+        public static final String[] COLUMNS = new String[] {
+            COLUMN_ID,
+            COLUMN_SYNC_RUN_ID,
+            COLUMN_SYNC_TABLE,
+            COLUMN_SYNC_EXCEPTION,
+            COLUMN_SYNC_ADDED,
+            COLUMN_SYNC_UPDATED,
+            COLUMN_SYNC_DELETED
+        };
+
+        public static void onCreate(SQLiteDatabase db) {
+            db.execSQL("CREATE TABLE " + TABLE + " (" +
+                    COLUMN_ID + "               INTEGER    NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_SYNC_RUN_ID + "      INTEGER    NOT NULL                          , " +
+                    COLUMN_SYNC_TABLE + "       TEXT       NOT NULL                          , " +
+                    COLUMN_SYNC_EXCEPTION + "   TEXT                                         , " +
+                    COLUMN_SYNC_ADDED + "       INTEGER                                      , " +
+                    COLUMN_SYNC_UPDATED + "     INTEGER                                      , " +
+                    COLUMN_SYNC_DELETED + "     INTEGER                                       " +
+                    ");");
+        }
+        
+        public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE); onCreate(db);
+        }
+    }
     
     public static class Updated {
         public static final String TABLE = "updated";
@@ -1236,6 +1301,8 @@ public class DB extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         
         // system tables
+        SyncRun.onCreate(db);
+        SyncStat.onCreate(db);
         Updated.onCreate(db);
 
         // schema tables
@@ -1269,6 +1336,8 @@ public class DB extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int ov, int nv) {
         // system tables
+        SyncRun.onUpgrade(db, ov, nv);
+        SyncStat.onUpgrade(db, ov, nv);
         Updated.onUpgrade(db, ov, nv);
         
         // schema tables

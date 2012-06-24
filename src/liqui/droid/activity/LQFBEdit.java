@@ -39,7 +39,7 @@ import android.widget.EditText;
  */
 public class LQFBEdit extends Base {
 
-    public static final Uri CONTENT_URI = Uri.parse("content://liqui.droid.system/lqfbs");
+    public static final Uri CONTENT_URI = DBSystemProvider.LQFBS_CONTENT_URI;
     
     protected Uri mLQFBUri;
 

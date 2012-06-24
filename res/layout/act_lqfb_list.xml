@@ -47,6 +47,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:padding="0dp" >
+        <!-- Preview: listitem=@layout/row_simple_4 -->
 
     </ListView>
 

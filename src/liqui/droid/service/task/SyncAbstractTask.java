@@ -23,12 +23,27 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
+import org.joda.time.DateTime;
+
 import lfapi.v2.services.LiquidFeedbackException;
 import lfapi.v2.services.LiquidFeedbackServiceFactory;
 import liqui.droid.Constants;
 import liqui.droid.service.SyncService;
 
 public abstract class SyncAbstractTask implements Runnable {
+   
+    public class SyncStat {
+        public String tableName;
+        public DateTime syncTime;
+        public Long syncDuration;
+        public String syncException;
+        public Integer syncAdded;
+        public Integer syncUpdated;
+        public Integer syncDeleted;
+        public Long syncRunId;
+    }
+    
+    Long mSyncRunId;
     
     public static final long SYNC_TIME_MIN_5   =  5 * 60 * 1000;
     public static final long SYNC_TIME_MIN_15  = 15 * 60 * 1000;
@@ -56,7 +71,9 @@ public abstract class SyncAbstractTask implements Runnable {
     protected String mMemberId;
     
     protected String mSessionKey;
-
+    
+    protected SyncStat mSyncStat;
+    
     public SyncAbstractTask(Context ctx, Intent intent, LiquidFeedbackServiceFactory factory,
             String databaseName, String tableName, long syncTime) {
         this.mCtx = ctx;
@@ -74,35 +91,53 @@ public abstract class SyncAbstractTask implements Runnable {
         */
     }
     
-    public abstract void sync(Context ctx, String ids) throws LiquidFeedbackException;
+    public void setSyncRunId(Long id) {
+        mSyncRunId = id;
+    }
     
-    protected void dirtyMark() {
+    public abstract int sync(Context ctx, String ids) throws LiquidFeedbackException;
+    
+    protected int dirtyMark() {
         ContentValues values = new ContentValues();
         values.put("meta_cached", 0);
         
-        mCtx.getContentResolver().update(dbUri("content://liqui.droid.db/" + tableName + "s"), values, null, null);
+        return mCtx.getContentResolver().update(dbUri("content://liqui.droid.db/" + tableName + "s"), values, null, null);
     }
     
-    protected void dirtyDelete() {
-        mCtx.getContentResolver().delete(dbUri("content://liqui.droid.db/" + tableName + "s"), "meta_cached = 0", null);
+    protected int dirtyDelete() {
+        return mCtx.getContentResolver().delete(dbUri("content://liqui.droid.db/" + tableName + "s"), "meta_cached = 0", null);
     }
     
     public void run() {
         String ids = null;
         
+        mSyncStat = new SyncStat();
+        
+        mSyncStat.tableName = tableName;
+        mSyncStat.syncTime = DateTime.now();
+        mSyncStat.syncRunId = mSyncRunId;
+        
         if (SyncService.updateNeeded(mCtx, databaseName, tableName, mSyncTime)) {
             try {
                 // Log.d("XXX", "Syncing " + tableName + " ids " + ids);
                 dirtyMark();
-                sync(mCtx, ids);
-                dirtyDelete();
+                
+                mSyncStat.syncUpdated = sync(mCtx, ids);
+                
+                mSyncStat.syncDeleted = dirtyDelete();
                 SyncService.updated(mCtx, databaseName, tableName);
+                
+                mSyncStat.syncDuration = DateTime.now().minus(mSyncStat.syncTime.getMillis()).getMillis();
             } catch (Exception e) {
                 mException = e;
+                mSyncStat.syncException = e.toString();
                 Log.d("Exception in sync " + tableName + " ids " + ids, e.toString());
                 e.printStackTrace();
             }
+            
         }
+
+        SyncService.saveSyncStat(mCtx, databaseName, mSyncStat);
     }
 
     public boolean hasException() {
@@ -208,6 +243,10 @@ public abstract class SyncAbstractTask implements Runnable {
             
             return memberId;
         }
+    }
+    
+    protected boolean isAuthenticated() {
+        return getMemberId() != null;
     }
     
     protected Intent getIntent() {

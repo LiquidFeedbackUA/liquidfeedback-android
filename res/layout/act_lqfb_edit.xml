@@ -64,26 +64,23 @@
                     </LinearLayout>
             </RelativeLayout>
 
-                    <View
-                        android:id="@id/separator"
-                        android:layout_width="fill_parent"
-                        android:layout_height="20dp" />
+            <View
+                android:id="@id/separator"
+                android:layout_width="fill_parent"
+                android:layout_height="20dp" />
 
             <Button
                 android:id="@+id/btn_lqfb_save"
-                android:layout_height="40dp"
-                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
                 
                 android:layout_gravity="center_horizontal"
-                android:paddingTop="30dip"
                 android:text="@string/bt_lqfb_save" />
 
-                                <View
-                        android:id="@id/separator"
-                        android:layout_width="fill_parent"
-                        android:layout_height="20dp" />
-
-            
+            <View
+                android:id="@id/separator"
+                android:layout_width="fill_parent"
+                android:layout_height="20dp" />
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

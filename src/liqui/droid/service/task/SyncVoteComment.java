@@ -25,6 +25,7 @@ import lfapi.v2.schema.Issue;
 import lfapi.v2.schema.Vote;
 import lfapi.v2.services.LiquidFeedbackServiceFactory;
 import lfapi.v2.services.LiquidFeedbackService.VotingService;
+import lfapi.v2.services.auth.SessionKeyAuthentication;
 import liqui.droid.Constants;
 import liqui.droid.db.DB;
 import liqui.droid.db.DBProvider;
@@ -37,9 +38,14 @@ public class SyncVoteComment extends SyncAbstractTask {
         super(ctx, intent, factory, databaseName, DB.Vote.Comment.TABLE, SYNC_TIME_HOUR_1);
     }
 
-    public void sync(Context ctx, String ids) {
-         VotingService vs = mFactory.createVoteService();
+    public int sync(Context ctx, String ids) {
+        VotingService service = mFactory.createVoteService();
         
+        if (isAuthenticated()) {
+            service.setAuthentication(new SessionKeyAuthentication(getSessionKey()));
+        }
+
+        int nr = 0;
         int page = 0; boolean hasMore = true;
         while(hasMore) {
             Issue.Options io = new Issue.Options();
@@ -47,7 +53,7 @@ public class SyncVoteComment extends SyncAbstractTask {
             io.limit = Constants.LIMIT;
             io.offset = ((page++) * io.limit);
             
-            List<Vote.Comment> l = vs.getVotingComment(io);
+            List<Vote.Comment> l = service.getVotingComment(io);
         
             if (l.size() < io.limit) {
                 hasMore = false;
@@ -66,7 +72,9 @@ public class SyncVoteComment extends SyncAbstractTask {
                 v[idx++] = values;
             }
 
-            ctx.getContentResolver().bulkInsert(dbUri(DBProvider.VOTE_COMMENT_CONTENT_URI), v);
+            nr += ctx.getContentResolver().bulkInsert(dbUri(DBProvider.VOTE_COMMENT_CONTENT_URI), v);
         }
+        
+        return nr;
     }
 }

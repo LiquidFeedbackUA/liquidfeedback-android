@@ -50,6 +50,24 @@ public class DBProvider extends ContentProvider {
         mDb = new HashMap<String, DB>();
     }
     
+    // sync run
+    private static final int SYNC_RUN = 1;
+    private static final int SYNC_RUN_NAME = 2;
+    private static final String SYNC_RUN_PATH = "sync_runs";
+    
+    public static final Uri    SYNC_RUN_CONTENT_URI  = Uri.parse("content://" + AUTHORITY + "/" + SYNC_RUN_PATH);
+    public static final String SYNC_RUN_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/sync_runs";
+    public static final String SYNC_RUN_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/sync_run";
+
+    // sync statistics
+    private static final int SYNC_STAT = 10000;
+    private static final int SYNC_STAT_NAME = 20000;
+    private static final String SYNC_STAT_PATH = "sync_stats";
+    
+    public static final Uri    SYNC_STAT_CONTENT_URI  = Uri.parse("content://" + AUTHORITY + "/" + SYNC_STAT_PATH);
+    public static final String SYNC_STAT_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/sync_stats";
+    public static final String SYNC_STAT_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/sync_stat";
+
     // updated
     private static final int UPDATED = 30000;
     private static final int UPDATED_NAME = 40000;
@@ -291,6 +309,12 @@ public class DBProvider extends ContentProvider {
     private static final UriMatcher URIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     
     static {
+        URIMatcher.addURI(AUTHORITY, SYNC_RUN_PATH,        SYNC_RUN);
+        URIMatcher.addURI(AUTHORITY, SYNC_RUN_PATH + "/#", SYNC_RUN_NAME);
+        
+        URIMatcher.addURI(AUTHORITY, SYNC_STAT_PATH,        SYNC_STAT);
+        URIMatcher.addURI(AUTHORITY, SYNC_STAT_PATH + "/#", SYNC_STAT_NAME);
+        
         URIMatcher.addURI(AUTHORITY, UPDATED_PATH,        UPDATED);
         URIMatcher.addURI(AUTHORITY, UPDATED_PATH + "/#", UPDATED_NAME);
         
@@ -398,6 +422,12 @@ public class DBProvider extends ContentProvider {
 
         int nr = 0;
         switch (uriType) {
+            case SYNC_RUN:
+                nr = sqlDB.delete(DB.SyncRun.TABLE, whereClause, whereArgs);
+                break;
+            case SYNC_STAT:
+                nr = sqlDB.delete(DB.SyncStat.TABLE, whereClause, whereArgs);
+                break;
             case AREA:
                 nr = sqlDB.delete(DB.Area.TABLE, whereClause, whereArgs);
                 break;
@@ -490,7 +520,7 @@ public class DBProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
         
-        getContext().getContentResolver().notifyChange(uri, null, false);
+        getContext().getContentResolver().notifyChange(uri, null, true);
 
         return nr;
     }
@@ -519,12 +549,20 @@ public class DBProvider extends ContentProvider {
         SQLiteDatabase sqlDB = mDb.get(database).getWritableDatabase();
         
         // update meta_cached
-        if (uriType != UPDATED && !values.containsKey("meta_cached")) { 
+        if (uriType != UPDATED && uriType != SYNC_STAT && uriType != SYNC_RUN && !values.containsKey("meta_cached")) { 
             values.put("meta_cached", System.currentTimeMillis());
         }
         
         long id = 0;
         switch (uriType) {
+            case SYNC_RUN:
+                id = sqlDB.insertWithOnConflict(DB.SyncRun.TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+                getContext().getContentResolver().notifyChange(uri, null, false);
+                return Uri.parse(SYNC_RUN_PATH + "/" + id);
+            case SYNC_STAT:
+                id = sqlDB.insertWithOnConflict(DB.SyncStat.TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+                getContext().getContentResolver().notifyChange(uri, null, false);
+                return Uri.parse(SYNC_STAT_PATH + "/" + id);
             case UPDATED:
                 id = sqlDB.insertWithOnConflict(DB.Updated.TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
                 getContext().getContentResolver().notifyChange(uri, null, false);
@@ -647,6 +685,12 @@ public class DBProvider extends ContentProvider {
         int numInserted = 0;
 
         switch(uriType) {
+            case SYNC_RUN:
+                numInserted = bulkInsert(uri, sqlDB, DB.SyncRun.TABLE, DB.SyncStat.COLUMNS, values);
+                break;
+            case SYNC_STAT:
+                numInserted = bulkInsert(uri, sqlDB, DB.SyncStat.TABLE, DB.SyncStat.COLUMNS, values);
+                break;
             case AREA:
                 numInserted = bulkInsert(uri, sqlDB, DB.Area.TABLE, DB.Area.COLUMNS, values);
                 break;
@@ -749,7 +793,7 @@ public class DBProvider extends ContentProvider {
             sqlDB.setTransactionSuccessful();
         } finally {
             sqlDB.endTransaction();
-            getContext().getContentResolver().notifyChange(uri, null, false);
+            getContext().getContentResolver().notifyChange(uri, null, true);
         }
 
         return values.length;
@@ -785,10 +829,25 @@ public class DBProvider extends ContentProvider {
         Cursor cursor;
         
         switch (URIMatcher.match(uri)) {
+            case SYNC_RUN:
+                queryBuilder.setTables(DB.SyncRun.TABLE);
+                cursor = queryBuilder.query(sdb, projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+            case SYNC_RUN_NAME:
+                queryBuilder.setTables(DB.SyncRun.TABLE);
+                cursor = queryBuilder.query(sdb, projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+            case SYNC_STAT:
+                queryBuilder.setTables(DB.SyncStat.TABLE);
+                cursor = queryBuilder.query(sdb, projection, selection, selectionArgs, null, null, sortOrder);
+                break;
+            case SYNC_STAT_NAME:
+                queryBuilder.setTables(DB.SyncStat.TABLE);
+                cursor = queryBuilder.query(sdb, projection, selection, selectionArgs, null, null, sortOrder);
+                break;
             case UPDATED:
                 queryBuilder.setTables(DB.Updated.TABLE);
                 cursor = queryBuilder.query(sdb, projection, selection, selectionArgs, null, null, sortOrder);
-
                 break;
             case UPDATED_NAME:
                 queryBuilder.setTables(DB.Updated.TABLE);
@@ -1342,7 +1401,131 @@ public class DBProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        String database = uri.getQueryParameter("db");
+        
+        // Log.d("XXXXXXXXXX", "update in database: " + uri);
+        
+        if (!mDb.containsKey(database)) {
+            mDb.put(database, new DB(mContext, database));
+        }
+        
+        SQLiteDatabase sdb = mDb.get(database).getWritableDatabase();
+        
+        int nr = 0;
+        switch (URIMatcher.match(uri)) {
+            case SYNC_RUN:
+            case SYNC_RUN_NAME:
+                nr = sdb.updateWithOnConflict(DB.SyncRun.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case SYNC_STAT:
+            case SYNC_STAT_NAME:
+                nr = sdb.updateWithOnConflict(DB.SyncStat.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case UPDATED:
+            case UPDATED_NAME:
+                nr = sdb.updateWithOnConflict(DB.Updated.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case AREA:
+            case AREA_ID:
+                nr = sdb.updateWithOnConflict(DB.Area.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case BATTLE:
+            case BATTLE_ID:
+                nr = sdb.updateWithOnConflict(DB.Initiative.Battle.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case ISSUE_COMMENT:
+            case ISSUE_COMMENT_ID:
+                nr = sdb.updateWithOnConflict(DB.Issue.Comment.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case CONTACT:
+            case CONTACT_ID:
+                nr = sdb.updateWithOnConflict(DB.Member.Contact.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case DELEGATION:
+            case DELEGATION_ID:
+                nr = sdb.updateWithOnConflict(DB.Delegation.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case DRAFT:
+            case DRAFT_AREA_ID:
+                nr = sdb.updateWithOnConflict(DB.Draft.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case EVENT:
+            case EVENT_ID:
+                nr = sdb.updateWithOnConflict(DB.Event.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case INITIATIVE:
+            case INITIATIVE_ID:
+                nr = sdb.updateWithOnConflict(DB.Initiative.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case INITIATOR:
+            case INITIATOR_ID:
+                nr = sdb.updateWithOnConflict(DB.Initiative.Initiator.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case INTEREST:
+            case INTEREST_ID:
+                nr = sdb.updateWithOnConflict(DB.Issue.Interest.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case ISSUE:
+            case ISSUE_ID:
+                nr = sdb.updateWithOnConflict(DB.Issue.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case OPINION:
+            case OPINION_ID:
+                nr = sdb.updateWithOnConflict(DB.Opinion.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case POLICY:
+            case POLICY_ID:
+                nr = sdb.updateWithOnConflict(DB.Policy.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case PRIVILEGE:
+            case PRIVILEGE_ID:
+                nr = sdb.updateWithOnConflict(DB.Privilege.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case SUGGESTION:
+            case SUGGESTION_ID:
+                nr = sdb.updateWithOnConflict(DB.Suggestion.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case SUPPORTER:
+            case SUPPORTER_ID:
+                nr = sdb.updateWithOnConflict(DB.Initiative.Supporter.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case MEMBER:
+            case MEMBER_ID:
+                nr = sdb.updateWithOnConflict(DB.Member.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case MEMBER_IMAGE:
+            case MEMBER_IMAGE_ID:
+                nr = sdb.updateWithOnConflict(DB.Member.Image.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case MEMBERSHIP:
+            case MEMBERSHIP_ID:
+                nr = sdb.updateWithOnConflict(DB.Membership.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case UNIT:
+            case UNIT_ID:
+                nr = sdb.updateWithOnConflict(DB.Unit.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case VOTE:
+            case VOTE_ID:
+                nr = sdb.updateWithOnConflict(DB.Vote.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case VOTE_COMMENT:
+            case VOTE_COMMENT_ID:
+                nr = sdb.updateWithOnConflict(DB.Vote.Comment.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case VOTER:
+            case VOTER_ID:
+                nr = sdb.updateWithOnConflict(DB.Vote.Voter.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            case DELEGATING_VOTER:
+            case DELEGATING_VOTER_ID:
+                nr = sdb.updateWithOnConflict(DB.Vote.DelegatingVoter.TABLE, values, selection, selectionArgs, SQLiteDatabase.CONFLICT_REPLACE);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
+        }
+        
+        return nr;
     }
     
     public void bind(SQLiteStatement insert, int index, String value) {

@@ -24,6 +24,7 @@ import java.util.List;
 import lfapi.v2.schema.Area;
 import lfapi.v2.services.LiquidFeedbackServiceFactory;
 import lfapi.v2.services.LiquidFeedbackService.AreaUnitService;
+import lfapi.v2.services.auth.SessionKeyAuthentication;
 import liqui.droid.Constants;
 import liqui.droid.db.DB;
 import liqui.droid.db.DBProvider;
@@ -36,9 +37,14 @@ public class SyncArea extends SyncAbstractTask {
         super(ctx, intent, factory, databaseName, DB.Area.TABLE, SYNC_TIME_HOUR_12);
     }
     
-    public void sync(Context ctx, String areaIds) {
-        AreaUnitService aus = mFactory.createAreaUnitService();
+    public int sync(Context ctx, String areaIds) {
+        AreaUnitService service = mFactory.createAreaUnitService();
         
+        if (isAuthenticated()) {
+            service.setAuthentication(new SessionKeyAuthentication(getSessionKey()));
+        }
+        
+        int nr = 0;
         int page = 0; boolean hasMore = true;
         while(hasMore) {
             Area.Options ao = new Area.Options();
@@ -47,7 +53,7 @@ public class SyncArea extends SyncAbstractTask {
             ao.limit = Constants.LIMIT;
             ao.offset = ((page++) * ao.limit);
         
-            List<Area> l = aus.getArea(ao);
+            List<Area> l = service.getArea(ao);
             
             if (l.size() < ao.limit) {
                 hasMore = false;
@@ -68,7 +74,9 @@ public class SyncArea extends SyncAbstractTask {
                 v[idx++] = values;
             }
             
-            ctx.getContentResolver().bulkInsert(dbUri(DBProvider.AREA_CONTENT_URI), v);
+            nr += ctx.getContentResolver().bulkInsert(dbUri(DBProvider.AREA_CONTENT_URI), v);
         }
+        
+        return nr;
     }
 }

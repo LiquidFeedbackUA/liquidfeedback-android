@@ -11,17 +11,19 @@ Goal of the project is a fully featured Android app connecting to [LiquidFeedbac
 To keep updated about the development, feel free to follow us on twitter: [@LiquiDroidApp](http://twitter.com/LiquiDroidApp).
 
 ## Build dependencies
+
 This project has the following dependencies:
 
 * liquidfeedback-java-sdk which can be downloaded [here](https://github.com/koppi/liquidfeedback-java-sdk),
-* ViewPagerIndicator which can be downloaded [here](http://viewpagerindicator.com),
-* markupartist actionbar which (already integrated in the project files) can be downloaded [here](https://github.com/johannilsson/android-actionbar),
-* Gson which (already integrated in the project files) can be downloaded [here](http://code.google.com/p/google-gson/),
-* Joda-Time which (already integrated in the project files) can be downloaded [here](http://joda-time.sourceforge.net/),
-* PrettyTime which (already integrated in the project files) can be downloaded [here](http://ocpsoft.org/prettytime/),
-* Javascript Markdown Rocketwiki (already integrated in the project files) can be downloaded [here](https://github.com/koppi/javascript-markdown-rocketwiki).
 
-The app is supported on Android platforms v4 (aka v1.6) onwards.
+* Gson which (already integrated in the project files) can be downloaded [here](http://code.google.com/p/google-gson/),
+* Javascript Markdown Rocketwiki (already integrated in the project files) can be downloaded [here](https://github.com/koppi/javascript-markdown-rocketwiki).
+* Joda-Time which (already integrated in the project files) can be downloaded [here](http://joda-time.sourceforge.net/),
+* markupartist actionbar which (already integrated in the project files) can be downloaded [here](https://github.com/johannilsson/android-actionbar),
+* PrettyTime which (already integrated in the project files) can be downloaded [here](http://ocpsoft.org/prettytime/),
+* ViewPagerIndicator which (already integrated in the project files) can be downloaded [here](http://viewpagerindicator.com),
+
+The app is supported on Android platforms v14 (aka [Ice Cream Sandwitch](http://www.android.com/about/ice-cream-sandwich/)) onwards.
 
 For more information see the following wiki pages.
 

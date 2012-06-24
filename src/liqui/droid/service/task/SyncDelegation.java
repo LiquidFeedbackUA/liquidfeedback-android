@@ -24,6 +24,7 @@ import java.util.List;
 import lfapi.v2.schema.Delegation;
 import lfapi.v2.services.LiquidFeedbackServiceFactory;
 import lfapi.v2.services.LiquidFeedbackService.DelegationService;
+import lfapi.v2.services.auth.SessionKeyAuthentication;
 import liqui.droid.Constants;
 import liqui.droid.db.DB;
 import liqui.droid.db.DBProvider;
@@ -36,16 +37,21 @@ public class SyncDelegation extends SyncAbstractTask {
         super(ctx, intent, factory, databaseName, DB.Delegation.TABLE, SYNC_TIME_HOUR_12);
     }
     
-    public void sync(Context ctx, String ids) {
-        DelegationService ps = mFactory.createDelegationService();
+    public int sync(Context ctx, String ids) {
+        DelegationService service = mFactory.createDelegationService();
         
+        if (isAuthenticated()) {
+            service.setAuthentication(new SessionKeyAuthentication(getSessionKey()));
+        }
+
+        int nr = 0;
         int page = 0; boolean hasMore = true;
         while(hasMore) {
             Delegation.Options dlgo = new Delegation.Options();
             dlgo.limit = Constants.LIMIT;
             dlgo.offset = ((page++) * dlgo.limit);
         
-            List<Delegation> l = ps.getDelegation(dlgo, null, null, null, null);
+            List<Delegation> l = service.getDelegation(dlgo, null, null, null, null);
             
             if (l.size() < dlgo.limit) {
                 hasMore = false;
@@ -66,7 +72,9 @@ public class SyncDelegation extends SyncAbstractTask {
                 // println(values.toString());
             }
 
-            ctx.getContentResolver().bulkInsert(dbUri(DBProvider.DELEGATION_CONTENT_URI), v);
+            nr += ctx.getContentResolver().bulkInsert(dbUri(DBProvider.DELEGATION_CONTENT_URI), v);
         }
+        
+        return nr;
     }
 }

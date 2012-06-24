@@ -10,7 +10,7 @@
         android:id="@+id/actionbar"
         style="@style/ActionBar"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/actionbar_height"
         app:title="@string/app_name" />
 
     <include
@@ -21,8 +21,9 @@
     
     <android.support.v4.view.ViewPager
 		android:id="@+id/viewpager"
+		android:layout_weight="1"
 		android:layout_width="fill_parent"
-		android:layout_height="fill_parent" >
+		android:layout_height="0dip" >
 		<android.support.v4.view.PagerTitleStrip
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"

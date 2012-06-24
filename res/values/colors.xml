@@ -14,17 +14,13 @@
      limitations under the License.
 -->
 <resources>
-    <color name="windowTitleBackgroundStyle">#507AAA</color>
+    <color name="windowTitleBackgroundStyle">#00000000</color>
     <color name="titletextcolor">#F8F8F8</color>
 
     <color name="link">#00000000</color>
     <color name="link_active">#FD9B00</color>
     <color name="link_inactive">#DD7B00</color>
     
-    <color name="actionbar_separator">#000000</color>
-    <color name="actionbar_title">#000000</color>
-    <color name="actionbar_background_start">#efefef</color>
-    <color name="actionbar_background_end">#cccccc</color>
-    <color name="actionbar_background_item_pressed_start">#FF7F00</color>
-    <color name="actionbar_background_item_pressed_end">#EE7600</color>
+    <color name="actionbar_separator">#29000000</color>
+    <color name="actionbar_title">#FFFFFF</color>
 </resources>

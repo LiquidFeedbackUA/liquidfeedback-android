@@ -22,11 +22,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -51,7 +56,11 @@ public class Accounts extends Base implements OnItemClickListener {
     protected ListView mListView;
     
     protected Button mButtonAccountAdd;
+    
+    protected static final int ACTIVITY_SHOW_STATS = 1234;
 
+    protected static final int SYNC_STAT_ID = Menu.FIRST + 1;
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,9 +72,12 @@ public class Accounts extends Base implements OnItemClickListener {
         mAccountManager = AccountManager.get(getApplicationContext());
         Account[] accounts = mAccountManager.getAccountsByType(Constants.Account.TYPE);
         
+        mAdapter = new AccountsAdapter(this, R.layout.row_account, accounts);
+        
         mListView = (ListView) findViewById(R.id.list_view);
-        mListView.setAdapter(new AccountsAdapter(this, R.layout.row_account, accounts));
+        mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
+        registerForContextMenu(mListView);
         
         mButtonAccountAdd = (Button) findViewById(R.id.btn_account_add);
         mButtonAccountAdd.setOnClickListener(new OnClickListener() {
@@ -91,13 +103,15 @@ public class Accounts extends Base implements OnItemClickListener {
      * Sets the bread crumbs.
      */
     protected void setBreadCrumbs() {
-        BreadCrumbHolder[] breadCrumbHolders = new BreadCrumbHolder[1];
+        BreadCrumbHolder[] breadCrumbHolders = new BreadCrumbHolder[0];
 
+        /*
         BreadCrumbHolder b = new BreadCrumbHolder();
         b.setLabel(getResources().getString(R.string.title_explore));
         b.setTag(Constants.EXPLORE);
         breadCrumbHolders[0] = b;
-            
+          */
+        
         createBreadcrumb(getString(R.string.menu_accounts), breadCrumbHolders);
     }
 
@@ -105,11 +119,35 @@ public class Accounts extends Base implements OnItemClickListener {
     public void onItemClick(AdapterView<?> l, View v, int position, long id) {
         Account account = (Account)mListView.getItemAtPosition(position);
         Intent intent = new Intent();
-        intent.putExtra(Constants.Account.NAME, account);
+        intent.putExtra("ACCOUNT", account);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }
     
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+            ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        menu.add(0, SYNC_STAT_ID, 0, getString(R.string.account_ctx_sync_stat));
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case SYNC_STAT_ID:
+                AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+                        .getMenuInfo();
+
+                Intent intent = new Intent().setClass(Accounts.this, SyncStatListCached.class);
+
+                intent.putExtra("ACCOUNT", mAdapter.getItem(info.position));
+                
+                startActivityForResult(intent, ACTIVITY_SHOW_STATS);
+                return true;
+        }
+        return super.onContextItemSelected(item);
+    }
+
     public class AccountsAdapter extends ArrayAdapter<Account> {
 
         public AccountsAdapter(Context context, int textViewResourceId, Account[] objects) {

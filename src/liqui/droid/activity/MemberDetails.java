@@ -56,6 +56,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
+
 import java.lang.ref.WeakReference;
 
 /**
@@ -98,7 +101,7 @@ public class MemberDetails extends Base implements OnClickListener, OnItemClickL
         setUpActionBar();
         setBreadCrumbs();
         
-        CONTENT_URI = dbUri("content://liqui.droid.db/members");
+        CONTENT_URI = dbUri(DBProvider.MEMBER_CONTENT_URI);
 
         Bundle extras = getIntent().getExtras();
         
@@ -119,7 +122,7 @@ public class MemberDetails extends Base implements OnClickListener, OnItemClickL
         mMemberDetailId = mUri.getLastPathSegment();
         
         ViewPager vp = (ViewPager) findViewById(R.id.viewpager);
-        mAdapter = new MemberDetailsPagerAdapter(this, dbUri("content://liqui.droid.db/members"));
+        mAdapter = new MemberDetailsPagerAdapter(this, CONTENT_URI);
         vp.setAdapter(mAdapter);
         
         mDetailOnPageChangeListener = new DetailOnPageChangeListener();
@@ -138,14 +141,16 @@ public class MemberDetails extends Base implements OnClickListener, OnItemClickL
      * Sets the bread crumbs.
      */
     protected void setBreadCrumbs() {
-        BreadCrumbHolder[] breadCrumbHolders = new BreadCrumbHolder[1];
+        BreadCrumbHolder[] breadCrumbHolders = new BreadCrumbHolder[0];
 
+        /*
         BreadCrumbHolder b = new BreadCrumbHolder();
         b.setLabel(getResources().getString(R.string.title_explore));
         b.setTag(Constants.EXPLORE);
         breadCrumbHolders[0] = b;
-            
-        createBreadcrumb(getString(R.string.members), breadCrumbHolders);
+        */
+        
+        createBreadcrumb(getString(R.string.member), breadCrumbHolders);
     }
 
     protected void onSavedInstanceState(Bundle outState) {
@@ -505,7 +510,8 @@ public class MemberDetails extends Base implements OnClickListener, OnItemClickL
 
             TextView tvBirthday = (TextView) view.findViewById(R.id.tv_birthday);
             if (user.birthday != null) {
-                tvBirthday.setText(user.birthday.toString());
+                DateTimeFormatter f = new DateTimeFormatterBuilder().appendYear(4, 4).toFormatter();
+                tvBirthday.setText(f.print(user.birthday));
             }
 
             TextView tvAddress = (TextView) view.findViewById(R.id.tv_address);

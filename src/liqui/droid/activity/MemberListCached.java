@@ -112,12 +112,14 @@ public class MemberListCached extends Base
      * Sets the bread crumbs.
      */
     protected void setBreadCrumbs() {
-        BreadCrumbHolder[] breadCrumbHolders = new BreadCrumbHolder[1];
+        BreadCrumbHolder[] breadCrumbHolders = new BreadCrumbHolder[0];
 
+        /*
         BreadCrumbHolder b = new BreadCrumbHolder();
         b.setLabel(getResources().getString(R.string.title_explore));
         b.setTag(Constants.EXPLORE);
         breadCrumbHolders[0] = b;
+        */
             
         createBreadcrumb(getString(R.string.members), breadCrumbHolders);
     }
@@ -244,7 +246,7 @@ public class MemberListCached extends Base
 
     @Override
     public void onLoadFinished(Loader<Cursor> cl, Cursor cursor) {
-        mAdapter.swapCursor(cursor);
+        mAdapter.changeCursor(cursor);
     }
 
     @Override
@@ -258,11 +260,11 @@ public class MemberListCached extends Base
         mFilterText.removeTextChangedListener(filterTextWatcher);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public Cursor runQuery(CharSequence constraint) {
-        return managedQuery(CONTENT_URI, null, "name NOTNULL AND name LIKE ?",
+        CursorLoader cursorLoader = new CursorLoader(this, CONTENT_URI, null, "name NOTNULL AND name LIKE ?",
                 new String[] { "%" + constraint.toString() + "%" }, mSortOrder + " " + mSortDir);
+        return cursorLoader.loadInBackground();
     }
     
     /**

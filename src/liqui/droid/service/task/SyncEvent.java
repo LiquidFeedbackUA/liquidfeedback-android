@@ -24,6 +24,7 @@ import java.util.List;
 import lfapi.v2.schema.Event;
 import lfapi.v2.services.LiquidFeedbackServiceFactory;
 import lfapi.v2.services.LiquidFeedbackService.EventService;
+import lfapi.v2.services.auth.SessionKeyAuthentication;
 import liqui.droid.Constants;
 import liqui.droid.db.DB;
 import liqui.droid.db.DBProvider;
@@ -37,9 +38,14 @@ public class SyncEvent extends SyncAbstractTask {
         super(ctx, intent, factory, databaseName, DB.Event.TABLE, SYNC_TIME_MIN_15);
     }
     
-    public void sync(Context ctx, String ids) {
-        EventService es = mFactory.createEventService();
+    public int sync(Context ctx, String ids) {
+        EventService service = mFactory.createEventService();
         
+        if (isAuthenticated()) {
+            service.setAuthentication(new SessionKeyAuthentication(getSessionKey()));
+        }
+
+        int nr = 0;
         int page = 0; boolean hasMore = true;
         while(hasMore) {
             Event.Options eo = new Event.Options();
@@ -47,7 +53,7 @@ public class SyncEvent extends SyncAbstractTask {
             eo.limit = Constants.LIMIT;
             eo.offset = ((page++) * eo.limit);
             
-            List<Event> l = es.getEvent(eo);
+            List<Event> l = service.getEvent(eo);
         
             if (l.size() < eo.limit) {
                 hasMore = false;
@@ -68,7 +74,9 @@ public class SyncEvent extends SyncAbstractTask {
                 v[idx++] = values;
             }
 
-            ctx.getContentResolver().bulkInsert(dbUri(DBProvider.EVENT_CONTENT_URI), v);
+            nr += ctx.getContentResolver().bulkInsert(dbUri(DBProvider.EVENT_CONTENT_URI), v);
         }
+        
+        return nr;
     }
 }

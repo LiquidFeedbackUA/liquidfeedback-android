@@ -24,6 +24,7 @@ import java.util.List;
 import lfapi.v2.schema.Draft;
 import lfapi.v2.services.LiquidFeedbackServiceFactory;
 import lfapi.v2.services.LiquidFeedbackService.DraftService;
+import lfapi.v2.services.auth.SessionKeyAuthentication;
 import liqui.droid.Constants;
 import liqui.droid.db.DB;
 import liqui.droid.db.DBProvider;
@@ -36,16 +37,21 @@ public class SyncDraft extends SyncAbstractTask {
         super(ctx, intent, factory, databaseName, DB.Draft.TABLE, SYNC_TIME_MIN_15);
     }
 
-    public void sync(Context ctx, String ids) {
-        DraftService ds = mFactory.createDraftService();
+    public int sync(Context ctx, String ids) {
+        DraftService service = mFactory.createDraftService();
         
+        if (isAuthenticated()) {
+            service.setAuthentication(new SessionKeyAuthentication(getSessionKey()));
+        }
+
+        int nr = 0;
         int page = 0; boolean hasMore = true;
         while(hasMore) {
             Draft.Options dlgo = new Draft.Options();
             dlgo.limit = Constants.LIMIT;
             dlgo.offset = ((page++) * dlgo.limit);
             
-            List<Draft> l = ds.getDraft(dlgo, null, null, null, null);
+            List<Draft> l = service.getDraft(dlgo, null, null, null, null);
         
             if (l.size() < dlgo.limit) {
                 hasMore = false;
@@ -67,7 +73,9 @@ public class SyncDraft extends SyncAbstractTask {
                 v[idx++] = values;
             }
 
-            ctx.getContentResolver().bulkInsert(dbUri(DBProvider.DRAFT_CONTENT_URI), v);
+            nr += ctx.getContentResolver().bulkInsert(dbUri(DBProvider.DRAFT_CONTENT_URI), v);
         }
+        
+        return nr;
     }
 }

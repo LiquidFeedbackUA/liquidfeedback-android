@@ -17,6 +17,7 @@
 package liqui.droid.service;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import liqui.droid.Constants;
@@ -147,4 +148,18 @@ public abstract class BaseService extends InfiniteWakelockIntentService {
         return mIntent;
     }
     
+    public Uri dbUri(Uri uri) {
+        return dbUri(uri.toString());
+    }
+    
+    public Uri dbUri(String path) {
+        String apiDB = getAPIDB();
+        
+        if (apiDB != null) {
+            return Uri.parse(path).buildUpon().appendQueryParameter("db", getAPIDB()).build();
+        } else {
+            return Uri.parse(path);
+        }
+    }
+
 }

@@ -112,13 +112,14 @@ public class ContactListCached extends Base
      * Sets the bread crumbs.
      */
     protected void setBreadCrumbs() {
-        BreadCrumbHolder[] breadCrumbHolders = new BreadCrumbHolder[1];
+        BreadCrumbHolder[] breadCrumbHolders = new BreadCrumbHolder[0];
 
+        /*
         BreadCrumbHolder b = new BreadCrumbHolder();
         b.setLabel(getResources().getString(R.string.title_explore));
         b.setTag(Constants.EXPLORE);
         breadCrumbHolders[0] = b;
-            
+        */    
         createBreadcrumb(getString(R.string.contacts), breadCrumbHolders);
     }
     
@@ -259,11 +260,11 @@ public class ContactListCached extends Base
         mFilterText.removeTextChangedListener(filterTextWatcher);
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public Cursor runQuery(CharSequence constraint) {
-        return managedQuery(CONTENT_URI, null, "name NOTNULL AND name LIKE ?",
+        CursorLoader cursorLoader = new CursorLoader(this, CONTENT_URI, null, "name NOTNULL AND name LIKE ?",
                 new String[] { "%" + constraint.toString() + "%" }, mSortOrder + " " + mSortDir);
+        return cursorLoader.loadInBackground();
     }
     
     /**

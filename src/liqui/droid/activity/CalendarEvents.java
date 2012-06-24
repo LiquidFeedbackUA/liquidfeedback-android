@@ -22,8 +22,8 @@ import liqui.droid.R;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -61,12 +61,7 @@ public class CalendarEvents extends Base implements LoaderCallbacks<Cursor>, OnI
 
         createBreadcrumb(getResources().getString(R.string.title_explore), (BreadCrumbHolder[]) null);
         
-        String calendarLocation;
-        if (Build.VERSION.SDK_INT >= 8) {
-            calendarLocation = "content://com.android.calendar/"; 
-        } else {
-            calendarLocation = "content://calendar/";
-        }
+        String calendarLocation = "content://" + CalendarContract.AUTHORITY + "/";
         
         Bundle extras = getIntent().getExtras();
         
@@ -138,10 +133,11 @@ public class CalendarEvents extends Base implements LoaderCallbacks<Cursor>, OnI
     public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
         CursorLoader cursorLoader = new CursorLoader(getApplication(), mEventsUri,
                 new String[] {
-                    "_id",
-                    "title",
-                    "description",
-                    "eventLocation", "eventStatus" },
+                    CalendarContract.Events._ID,
+                    CalendarContract.Events.TITLE,
+                    CalendarContract.Events.DESCRIPTION,
+                    CalendarContract.Events.EVENT_LOCATION,
+                    CalendarContract.Events.STATUS },
                 "calendar_id = ?", new String[] { String.valueOf(mCalendarId) }, "_id");
         
         return cursorLoader;
@@ -175,11 +171,11 @@ public class CalendarEvents extends Base implements LoaderCallbacks<Cursor>, OnI
             TextView t1 = (TextView)view.findViewById(R.id.tv_title);
             TextView t2 = (TextView)view.findViewById(R.id.tv_desc);
             
-            String id = cursor.getString(cursor.getColumnIndex("_id")); 
-            String title = cursor.getString(cursor.getColumnIndex("title")); 
+            String id = cursor.getString(cursor.getColumnIndex(CalendarContract.Events._ID)); 
+            String title = cursor.getString(cursor.getColumnIndex(CalendarContract.Events.TITLE)); 
             
             t1.setText(id + " title: " + title);
-            t2.setText(cursor.getString(cursor.getColumnIndex("description")));
+            t2.setText(cursor.getString(cursor.getColumnIndex(CalendarContract.Events.STATUS)));
         }        
 
         @Override

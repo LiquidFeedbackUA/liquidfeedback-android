@@ -26,9 +26,9 @@
         <LinearLayout
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:layout_marginTop="3dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:id="@+id/main_content"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -37,6 +37,7 @@
         android:background="?attr/comment_box">
 
         <Spinner
+        android:padding="15dip"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:id="@+id/sp_lqfb_instance"
@@ -46,6 +47,7 @@
         </Spinner>
 
         <EditText
+        android:padding="15dip"
             android:id="@+id/et_api_token"
             android:layout_height="wrap_content"
             android:layout_width="fill_parent"
@@ -56,9 +58,10 @@
             android:singleLine="true"
             android:nextFocusDown="@+id/btn_login" />
         <Button
+        android:padding="15dip"
             android:text="@string/member_sign_in"
             android:id="@+id/btn_login"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_width="fill_parent"
             android:layout_gravity="center_vertical|center_horizontal|center"
             android:gravity="center_horizontal|center_vertical">

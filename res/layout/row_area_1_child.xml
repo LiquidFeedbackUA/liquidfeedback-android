@@ -27,7 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Title"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
                 android:id="@+id/tv_count"
@@ -37,7 +37,7 @@
                 android:layout_alignBottom="@+id/tv_title"
                 android:layout_alignParentRight="true"
                 android:text="120"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
                 android:id="@+id/textView1"
@@ -47,7 +47,7 @@
                 android:layout_alignBottom="@+id/tv_count"
                 android:layout_toLeftOf="@+id/tv_count"
                 android:text="#"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:textAppearance="?android:attr/textAppearanceSmall" />
         </RelativeLayout>
     </LinearLayout>
 
