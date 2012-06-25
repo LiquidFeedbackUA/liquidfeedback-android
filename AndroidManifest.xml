@@ -127,10 +127,10 @@
             android:name=".activity.IssueTreeCached"
             android:configChanges="orientation" />
         <activity
-            android:name=".activity.LQFBEdit"
+            android:name=".activity.InstanceEdit"
             android:configChanges="orientation" />
         <activity
-            android:name=".activity.LQFBListCached"
+            android:name=".activity.InstanceListCached"
             android:configChanges="orientation" />
         <activity
             android:name=".activity.Search"

@@ -168,7 +168,7 @@ public abstract class Base extends FragmentActivity implements DetachableResultR
             return true;
             /*
         case R.id.menu_logout:
-            Uri LQFBUri = Uri.parse("content://liqui.droid.system/lqfbs");
+            Uri LQFBUri = Uri.parse(DBSystemProvider.INSTANCE_CONTENT_URI);
             ContentValues values = new ContentValues();
             values.put(DBSystem.TableLQFBs.COLUMN_LAST_ACTIVE, 0);
             getContentResolver().update(LQFBUri, values,
@@ -184,7 +184,7 @@ public abstract class Base extends FragmentActivity implements DetachableResultR
             return true;
             */
         case R.id.menu_edit_lqfbs:
-            Intent intentLQFBEdit = new Intent().setClass(this, LQFBListCached.class);
+            Intent intentLQFBEdit = new Intent().setClass(this, InstanceListCached.class);
             intentLQFBEdit.putExtras(extras);
             startActivity(intentLQFBEdit);
             overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
@@ -348,8 +348,8 @@ public abstract class Base extends FragmentActivity implements DetachableResultR
         
         actionBar = (ActionBar) findViewById(R.id.actionbar);
 
-        if (this instanceof LQFBListCached
-                || this instanceof LQFBEdit
+        if (this instanceof InstanceListCached
+                || this instanceof InstanceEdit
                 || this instanceof Accounts
                 || this instanceof LiquiDroid
                 || this instanceof SyncStatListCached) {
@@ -743,6 +743,8 @@ public abstract class Base extends FragmentActivity implements DetachableResultR
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         
+        Log.d("XXX", "onActivityResult: " + requestCode + ", " + resultCode);
+        
         switch(requestCode) { 
             case (42) : { // open accounts 
               if (resultCode == Activity.RESULT_OK) { 
@@ -751,26 +753,37 @@ public abstract class Base extends FragmentActivity implements DetachableResultR
                       
                       if (account == null) return;
                       
-                      AccountManager am = AccountManager.get(this);
+                      AccountManager am = AccountManager.get(getApplicationContext());
                       
                       Log.d("XXX", "Selected account: " + account);
                       
-                      Uri LQFBUri = DBSystemProvider.LQFBS_CONTENT_URI;
+                      Uri accountUri = DBSystemProvider.ACCOUNT_CONTENT_URI;
 
                       // clear all last active entries
                       ContentValues valuesActive = new ContentValues();
-                      valuesActive.put(DBSystem.TableLQFBs.COLUMN_LAST_ACTIVE, 0);
-                      getContentResolver().update(LQFBUri, valuesActive, null, null);
+                      valuesActive.put(DBSystem.Account.COLUMN_LAST_ACTIVE, 0);
+                      getContentResolver().update(accountUri, valuesActive, null, null);
 
                       // save last active entry and member + session values
                       ContentValues values = new ContentValues();
-                      values.put(DBSystem.TableLQFBs.COLUMN_MEMBER_ID, am.getUserData(account, Constants.Account.MEMBER_ID));
-                      values.put(DBSystem.TableLQFBs.COLUMN_SESSION_KEY, am.getUserData(account, Constants.Account.SESSION_KEY));
-                      values.put(DBSystem.TableLQFBs.COLUMN_LAST_ACTIVE, 1);
-                      values.put(DBSystem.TableLQFBs.COLUMN_META_CACHED, System.currentTimeMillis());
-                      getContentResolver().update(LQFBUri, values,
-                              DBSystem.TableLQFBs.COLUMN_NAME + " = ?",
-                              new String[] { am.getUserData(account, Constants.Account.API_NAME) });
+                      values.put(DBSystem.Account.COLUMN_NAME, am.getUserData(account, Constants.Account.API_NAME));
+                      values.put(DBSystem.Account.COLUMN_URL, am.getUserData(account, Constants.Account.API_URL));
+//                      values.put(DBSystem.Account.COLUMN_API_KEY, am.getUserData(account, Constants.Account.));
+                      
+                      values.put(DBSystem.Account.COLUMN_MEMBER_ID, am.getUserData(account, Constants.Account.MEMBER_ID));
+                      values.put(DBSystem.Account.COLUMN_SESSION_KEY, am.getUserData(account, Constants.Account.SESSION_KEY));
+                      values.put(DBSystem.Account.COLUMN_LAST_ACTIVE, 1);
+                      values.put(DBSystem.Account.COLUMN_META_CACHED, System.currentTimeMillis());
+                      
+                      int updated = getContentResolver().update(accountUri, values,
+                              DBSystem.Account.COLUMN_ID + " = ? AND " + DBSystem.Account.COLUMN_NAME + " = ?",
+                              new String[] { am.getUserData(account, Constants.Account.MEMBER_ID),
+                                  am.getUserData(account, Constants.Account.API_NAME) });
+                      
+                      if (updated == 0) {
+                          Log.d("XXX", "updated == 0");
+                          getContentResolver().insert(accountUri, values);
+                      }
                       
                       // start member activity
                       Bundle extras = new Bundle();

@@ -37,9 +37,9 @@ import android.widget.EditText;
 /**
  * The Class LQFBEdit.
  */
-public class LQFBEdit extends Base {
+public class InstanceEdit extends Base {
 
-    public static final Uri CONTENT_URI = DBSystemProvider.LQFBS_CONTENT_URI;
+    public static final Uri CONTENT_URI = DBSystemProvider.INSTANCE_CONTENT_URI;
     
     protected Uri mLQFBUri;
 
@@ -60,12 +60,12 @@ public class LQFBEdit extends Base {
 
         // Check from the saved Instance
         mLQFBUri = (bundle == null) ? null : (Uri) bundle
-                .getParcelable(DBSystemProvider.LQFBS_CONTENT_ITEM_TYPE);
+                .getParcelable(DBSystemProvider.INSTANCE_CONTENT_ITEM_TYPE);
 
         // Or passed from the other activity
         if (extras != null) {
             mLQFBUri = extras
-                    .getParcelable(DBSystemProvider.LQFBS_CONTENT_ITEM_TYPE);
+                    .getParcelable(DBSystemProvider.INSTANCE_CONTENT_ITEM_TYPE);
 
             fillData(mLQFBUri);
         }
@@ -95,10 +95,10 @@ public class LQFBEdit extends Base {
             EditText et_web_url = (EditText) findViewById(R.id.et_lqfb_web_url);
             EditText et_key = (EditText) findViewById(R.id.et_lqfb_key);
             
-            et_name.setText(cursor.getString(cursor.getColumnIndex(DBSystem.TableLQFBs.COLUMN_NAME)));
-            et_url.setText(cursor.getString(cursor.getColumnIndex(DBSystem.TableLQFBs.COLUMN_URL)));
-            et_web_url.setText(cursor.getString(cursor.getColumnIndex(DBSystem.TableLQFBs.COLUMN_WEB_URL)));
-            et_key.setText(cursor.getString(cursor.getColumnIndex(DBSystem.TableLQFBs.COLUMN_API_KEY)));
+            et_name.setText(cursor.getString(cursor.getColumnIndex(DBSystem.Instance.COLUMN_NAME)));
+            et_url.setText(cursor.getString(cursor.getColumnIndex(DBSystem.Instance.COLUMN_URL)));
+            et_web_url.setText(cursor.getString(cursor.getColumnIndex(DBSystem.Instance.COLUMN_WEB_URL)));
+            et_key.setText(cursor.getString(cursor.getColumnIndex(DBSystem.Instance.COLUMN_API_KEY)));
 
             cursor.close();
         }
@@ -107,7 +107,7 @@ public class LQFBEdit extends Base {
     protected void onSavedInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         saveState();
-        outState.putParcelable(DBSystemProvider.LQFBS_CONTENT_ITEM_TYPE, mLQFBUri);
+        outState.putParcelable(DBSystemProvider.INSTANCE_CONTENT_ITEM_TYPE, mLQFBUri);
     }
     
     @Override
@@ -132,10 +132,10 @@ public class LQFBEdit extends Base {
 
         ContentValues values = new ContentValues();
         
-        values.put(DBSystem.TableLQFBs.COLUMN_NAME, et_name.getText().toString().trim());
-        values.put(DBSystem.TableLQFBs.COLUMN_WEB_URL, et_web_url.getText().toString().trim());
-        values.put(DBSystem.TableLQFBs.COLUMN_URL, et_url.getText().toString().trim());
-        values.put(DBSystem.TableLQFBs.COLUMN_API_KEY, et_key.getText().toString().trim());
+        values.put(DBSystem.Instance.COLUMN_NAME, et_name.getText().toString().trim());
+        values.put(DBSystem.Instance.COLUMN_WEB_URL, et_web_url.getText().toString().trim());
+        values.put(DBSystem.Instance.COLUMN_URL, et_url.getText().toString().trim());
+        values.put(DBSystem.Instance.COLUMN_API_KEY, et_key.getText().toString().trim());
         
         if (mLQFBUri == null) {
             getContentResolver().insert(CONTENT_URI, values);

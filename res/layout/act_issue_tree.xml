@@ -47,7 +47,7 @@
 
     <ImageView
         android:id="@+id/iv_breadcrumb_right"
-        android:contentDescription="imageview right"
+        android:contentDescription="@string/iv_breadcrumb_right"
         android:layout_width="35dip"
         android:layout_height="35dip"
         android:layout_alignParentRight="true"

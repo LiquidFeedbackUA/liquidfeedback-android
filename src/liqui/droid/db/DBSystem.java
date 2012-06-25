@@ -29,20 +29,19 @@ public class DBSystem extends SQLiteOpenHelper {
     
     private static final String DATABASE = "system.db";
 
-    private static final int VERSION = 10;
+    private static final int VERSION = 14;
     
-    public static class TableLQFBs {
-        public static final String TABLE = "lqfb";
+    public static class Account {
+        public static final String TABLE = "account";
         public static final String COLUMN_ID          = "_id";
         public static final String COLUMN_NAME        = "name";
         public static final String COLUMN_URL         = "api_url";
         public static final String COLUMN_WEB_URL     = "web_url";
         public static final String COLUMN_API_KEY     = "api_key";
-
+        
         public static final String COLUMN_SESSION_KEY = "session_key";
         public static final String COLUMN_MEMBER_ID   = "member_id";
         public static final String COLUMN_LAST_ACTIVE = "last_active";
-        
         public static final String COLUMN_META_CACHED = "meta_cached";
         
         public static String[] COLUMNS = new String[] {
@@ -58,7 +57,7 @@ public class DBSystem extends SQLiteOpenHelper {
         };
         
         public static void onCreate(SQLiteDatabase db) {
-            db.execSQL("CREATE TABLE lqfb(                  " +
+            db.execSQL("CREATE TABLE account(                " +
                     "_id  INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "name TEXT                             , " +
                     "api_url TEXT                          , " +
@@ -69,26 +68,64 @@ public class DBSystem extends SQLiteOpenHelper {
                     "last_active INTEGER                   , " +
                     "meta_cached TIMESTAMP                  " +
                     ");");
+        }
+        
+        public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE); onCreate(db);
+        }
+        
+    }
+    
+    public static class Instance {
+        public static final String TABLE = "instance";
+        public static final String COLUMN_ID          = "_id";
+        public static final String COLUMN_NAME        = "name";
+        public static final String COLUMN_URL         = "api_url";
+        public static final String COLUMN_WEB_URL     = "web_url";
+        public static final String COLUMN_API_KEY     = "api_key";
+
+        public static final String COLUMN_META_CACHED = "meta_cached";
+        
+        public static String[] COLUMNS = new String[] {
+            COLUMN_ID,
+            COLUMN_NAME,
+            COLUMN_URL,
+            COLUMN_WEB_URL,
+            COLUMN_API_KEY,
+            COLUMN_META_CACHED
+        };
+        
+        public static void onCreate(SQLiteDatabase db) {
+            db.execSQL("CREATE TABLE instance(               " +
+                    "_id  INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "name TEXT                             , " +
+                    "api_url TEXT                          , " +
+                    "web_url TEXT                          , " +
+                    "api_key TEXT                          , " +
+                    "meta_cached TIMESTAMP                  " +
+                    ");");
             
-            db.execSQL("INSERT INTO lqfb VALUES(1          , " +
+            db.execSQL("INSERT INTO instance VALUES(1      , " +
                     "'local-test'                          , " +
                     "'http://192.168.42.171:25520/'        , " +
                     "'http://192.168.42.171/lf2/'          , " +
                     "'1234'                                , " +
-                    "null                                  , " +
-                    "null                                  , " +
-                    "0                                     , " +
                     System.currentTimeMillis()                 +
                     ");");
 
-            db.execSQL("INSERT INTO lqfb VALUES(2          , " +
+            db.execSQL("INSERT INTO instance VALUES(2      , " +
                     "'apitest.liquidfeedback.org'          , " +
                     "'" + Constants.API.apiUrl + "'        , " +
                     "'" + Constants.API.webUrl + "'        , " +
                     "'WCMN2bxlyd7StUDGBtXFzIB'             , " +
-                    "null                                  , " +
-                    "null                                  , " +
-                    "0                                     , " +
+                    System.currentTimeMillis()                 +
+                    ");");
+            
+            db.execSQL("INSERT INTO instance VALUES(3      , " +
+                    "'apitest.koppi.me'                    , " +
+                    "'" + Constants.API.apiUrl + "'        , " +
+                    "'" + Constants.API.webUrl + "'        , " +
+                    "'t6Hc9tpbMRfPK8h2NDY'                 , " +
                     System.currentTimeMillis()                 +
                     ");");
             
@@ -105,14 +142,13 @@ public class DBSystem extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        
-        // system tables
-        TableLQFBs.onCreate(db);
+        Account.onCreate(db);
+        Instance.onCreate(db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int ov, int nv) {
-        // system tables
-        TableLQFBs.onUpgrade(db, ov, nv);
+        Account.onUpgrade(db, ov, nv);
+        Instance.onUpgrade(db, ov, nv);
     }
 }

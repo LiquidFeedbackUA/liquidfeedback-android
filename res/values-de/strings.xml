@@ -44,7 +44,9 @@
 	<!-- Accounts -->
 	<string name="account_add">Konto hinzufügen</string>
 	<string name="account_ctx_sync_stat">Sync-Statistik</string>
-		
+	<string name="last_update">Letztes Update: </string>
+	<string name="last_update_never">Letztes Update: noch nie</string>
+			
 	<!-- LQFB  -->
     <string name="lqfb_name">Name der Instanz</string>
 	<string name="lqfb_web_url">Web URL, z.B. http://host/lf2/</string>

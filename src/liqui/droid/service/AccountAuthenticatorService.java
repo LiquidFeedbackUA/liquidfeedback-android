@@ -62,7 +62,7 @@ public class AccountAuthenticatorService extends Service {
             String apiName = userData.getString(Constants.Account.API_NAME);
             
             Account account = new Account(memberId + "@" + apiName, ctx.getResources().getString(R.string.account_type));
-            AccountManager am = AccountManager.get(ctx);
+            AccountManager am = AccountManager.get(ctx.getApplicationContext());
             
             // Log.d("XXX", "addAccount userdata: " + userData.toString());
             
@@ -83,7 +83,7 @@ public class AccountAuthenticatorService extends Service {
         }
 
         public static Boolean hasLQFBAccount(Context ctx) {
-            AccountManager am = AccountManager.get(ctx);
+            AccountManager am = AccountManager.get(ctx.getApplicationContext());
             Account[] accounts = am.getAccountsByType(ctx.getResources().getString(R.string.account_type));
             if(accounts != null && accounts.length > 0)
                 return true;
@@ -92,7 +92,7 @@ public class AccountAuthenticatorService extends Service {
         }
 
         public static void removeLQFBAccount(Context ctx) {
-            AccountManager am = AccountManager.get(ctx);
+            AccountManager am = AccountManager.get(ctx.getApplicationContext());
             Account[] accounts = am.getAccountsByType(ctx.getResources().getString(R.string.account_type));
             for(Account account : accounts) {
                 am.removeAccount(account, null, null);
@@ -154,7 +154,7 @@ public class AccountAuthenticatorService extends Service {
         public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) throws NetworkErrorException {
             Log.i(TAG, "getAuthToken");
             
-            AccountManager am = AccountManager.get(mContext);
+            AccountManager am = AccountManager.get(mContext.getApplicationContext());
             String memberId   = account.name.toLowerCase().trim();
 //            String apiKey     = am.getPassword(account);
             String apiName    = am.getUserData(account, Constants.Account.API_NAME);
@@ -233,7 +233,7 @@ public class AccountAuthenticatorService extends Service {
 
     public static void resyncAccount(Context context) {
         Log.i(TAG, "resyncAccount");
-        AccountManager am = AccountManager.get(context);
+        AccountManager am = AccountManager.get(context.getApplicationContext());
         Account[] accounts = am.getAccountsByType(context.getResources().getString(R.string.account_type));
         if (ContentResolver.getSyncAutomatically(accounts[0], DBProvider.AUTHORITY)) {
             //Try turning it off and on again

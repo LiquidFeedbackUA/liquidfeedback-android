@@ -155,7 +155,7 @@ public class MemberDetails extends Base implements OnClickListener, OnItemClickL
 
     protected void onSavedInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(DBSystemProvider.LQFBS_CONTENT_ITEM_TYPE, mUri);
+        outState.putParcelable(DBSystemProvider.INSTANCE_CONTENT_ITEM_TYPE, mUri);
     }
     
     /*

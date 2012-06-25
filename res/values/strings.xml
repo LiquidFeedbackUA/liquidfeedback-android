@@ -45,8 +45,28 @@
 	<!-- Accounts -->
 	<string name="account_add">Add account</string>
 	<string name="account_ctx_sync_stat">Sync statistics</string>
+	<string name="last_update">Last update: </string>
+	<string name="last_update_never">Last update: never</string>
 	
-    <!-- LiquiDroid  -->
+	<string name="iv_account">Account image</string>
+	
+	<!-- Actionbar -->
+	<string name="ib_actionbar_item">actionbar item</string>
+	<string name="iv_home">actionbar home</string>
+	<string name="ib_home_item">actionbar home item</string>
+	<string name="iv_count">Count</string>
+	<string name="iv_membership">Membership</string>
+	
+	<!-- AreaListCached -->
+	
+	<string name="tv_title">Title</string>
+	<string name="tv_count">Count</string>
+	<string name="tv_hash">#</string>
+	
+	<!-- Breadcrumb -->
+    <string name="iv_breadcrumb_right">right breadcrumb image</string>
+	
+	<!-- LiquiDroid  -->
     <string name="lqfb_name">Instance Name</string>
 	<string name="lqfb_web_url">Web URL, e.g. http://host/lf2/</string>
     <string name="lqfb_url">API URL, e.g. http://host:port/</string>
@@ -73,6 +93,13 @@
     <string name="delete">Delete</string>
     <string name="duplicate">Duplicate</string>
     <string name="saved_changes">Saved changes</string>
+    
+    <!-- Initiative -->
+    <string name="iv_initiative">Initiative</string>
+    <string name="iv_support">Support</string>
+    
+    <!-- IssueTreeCached -->
+    <string name="iv_state">Issue state</string>
     
     <!-- MemberListCached -->
     <string name="members">Members</string>

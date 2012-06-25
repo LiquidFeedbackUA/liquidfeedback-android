@@ -73,7 +73,9 @@ import android.widget.AdapterView.OnItemSelectedListener;
 public class LiquiDroid extends Base
     implements OnItemSelectedListener, LoaderManager.LoaderCallbacks<Cursor> {
 
-    public static final Uri CONTENT_URI = DBSystemProvider.LQFBS_CONTENT_URI;
+    public static final Uri INSTANCE_CONTENT_URI = DBSystemProvider.INSTANCE_CONTENT_URI;
+
+    public static final Uri ACCOUNT_CONTENT_URI = DBSystemProvider.ACCOUNT_CONTENT_URI;
     
     protected SimpleCursorAdapter mAdapter;
     
@@ -150,15 +152,17 @@ public class LiquiDroid extends Base
         if (getIntent().getAction() != null && getIntent().getAction().equals(getString(R.string.action_login_sync))) {
             // we create a new account
         } else {
-            Cursor c = getContentResolver().query(CONTENT_URI, null, "last_active = 1", null, null);
+            Cursor c = getContentResolver().query(ACCOUNT_CONTENT_URI, null, "last_active = 1", null, null);
         
             c.moveToFirst();
         
             if (!c.isAfterLast()) {
-                mApiName    = c.getString(c.getColumnIndex(DBSystem.TableLQFBs.COLUMN_NAME));
-                mApiUrl     = c.getString(c.getColumnIndex(DBSystem.TableLQFBs.COLUMN_URL));
-                mMemberId   = c.getString(c.getColumnIndex(DBSystem.TableLQFBs.COLUMN_MEMBER_ID));
-                mSessionKey = c.getString(c.getColumnIndex(DBSystem.TableLQFBs.COLUMN_SESSION_KEY));
+                mApiName    = c.getString(c.getColumnIndex(DBSystem.Account.COLUMN_NAME));
+                mApiUrl     = c.getString(c.getColumnIndex(DBSystem.Account.COLUMN_URL));
+                mMemberId   = c.getString(c.getColumnIndex(DBSystem.Account.COLUMN_MEMBER_ID));
+                mSessionKey = c.getString(c.getColumnIndex(DBSystem.Account.COLUMN_SESSION_KEY));
+                
+                Log.d("XXX", "loading old session: " + mMemberId + "@" + mApiName);
             }
         
             c.close();
@@ -192,7 +196,7 @@ public class LiquiDroid extends Base
         
         mAdapter = new SimpleCursorAdapter(this,
                 android.R.layout.simple_spinner_item,
-                null, new String[] { DBSystem.TableLQFBs.COLUMN_NAME, DBSystem.TableLQFBs.COLUMN_ID },
+                null, new String[] { DBSystem.Instance.COLUMN_NAME, DBSystem.Instance.COLUMN_ID },
                 new int[]{ android.R.id.text1});
         
         mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -213,18 +217,13 @@ public class LiquiDroid extends Base
                 
                 if (c == null) return;
                 
-                mApiUrl     = c.getString(c.getColumnIndex(DBSystem.TableLQFBs.COLUMN_URL));
-
-                String name = c.getString(c.getColumnIndex(DBSystem.TableLQFBs.COLUMN_NAME));
-                String key  = mEditTextApiKey.getText().toString().trim();
-
-                ContentValues values = new ContentValues();
-                values.put(DBSystem.TableLQFBs.COLUMN_NAME, name);
-                values.put(DBSystem.TableLQFBs.COLUMN_API_KEY, key);
-                getContentResolver().update(CONTENT_URI, values, DBSystem.TableLQFBs.COLUMN_NAME + " = ?", new String[] { name });
+                mApiUrl  = c.getString(c.getColumnIndex(DBSystem.Instance.COLUMN_URL));
+                mApiName = c.getString(c.getColumnIndex(DBSystem.Instance.COLUMN_NAME));
 
                 hideKeyboard(mButtonLogin.getWindowToken());
-                new LoginTask(LiquiDroid.this).execute(getAPIName(), getAPIUrl());
+
+                String key  = mEditTextApiKey.getText().toString().trim();
+                new LoginTask(LiquiDroid.this).execute(getAPIName(), getAPIUrl(), key);
             }
         });
 
@@ -272,6 +271,8 @@ public class LiquiDroid extends Base
         private String mApiName;
         
         private String mApiUrl;
+        
+        private String mApiKey;
 
         /**
          * Instantiates a new load repository list task.
@@ -290,17 +291,16 @@ public class LiquiDroid extends Base
         protected Void doInBackground(String... params) {
             mApiName = params[0];
             mApiUrl  = params[1];
+            mApiKey  = params[2];
             
             if (mTarget.get() != null) {
                 try {
-                    String apiKey = mTarget.get().mEditTextApiKey.getText().toString().trim();
-
                     LiquidFeedbackServiceFactory factory = LiquidFeedbackServiceFactory
                             .newInstance(LoginTask.this.mApiUrl);
                     
                     SysInfoService sis = factory.createSysInfoService();
                     SessionService ss = factory.createSessionService();
-                    String sessionKey = ss.getSessionKey(apiKey);
+                    String sessionKey = ss.getSessionKey(mApiKey);
                     
                     sis.setAuthentication(new SessionKeyAuthentication(sessionKey));
                     SysInfo si = sis.getInfo();
@@ -319,22 +319,31 @@ public class LiquiDroid extends Base
                     mMemberId = String.valueOf(si.currentMemberId);
                     mSessionKey = sessionKey;
                     
-                    Uri LQFBUri = DBSystemProvider.LQFBS_CONTENT_URI;
-
                     // clear all last active entries
                     ContentValues valuesActive = new ContentValues();
-                    valuesActive.put(DBSystem.TableLQFBs.COLUMN_LAST_ACTIVE, 0);
-                    getContentResolver().update(LQFBUri, valuesActive, null, null);
+                    valuesActive.put(DBSystem.Account.COLUMN_LAST_ACTIVE, 0);
+                    getContentResolver().update(ACCOUNT_CONTENT_URI, valuesActive, null, null);
 
                     // save last active entry and member + session values
                     ContentValues values = new ContentValues();
-                    values.put(DBSystem.TableLQFBs.COLUMN_MEMBER_ID, mMemberId);
-                    values.put(DBSystem.TableLQFBs.COLUMN_SESSION_KEY, mSessionKey);
-                    values.put(DBSystem.TableLQFBs.COLUMN_LAST_ACTIVE, 1);
-                    values.put(DBSystem.TableLQFBs.COLUMN_META_CACHED, System.currentTimeMillis());
-                    getContentResolver().update(LQFBUri, values,
-                            DBSystem.TableLQFBs.COLUMN_NAME + " = ?",
-                            new String[] { LoginTask.this.mApiName });
+                    values.put(DBSystem.Account.COLUMN_NAME, mApiName);
+                    values.put(DBSystem.Account.COLUMN_URL, mApiUrl);
+                    values.put(DBSystem.Account.COLUMN_API_KEY, mApiKey);
+                    
+                    values.put(DBSystem.Account.COLUMN_MEMBER_ID, mMemberId);
+                    values.put(DBSystem.Account.COLUMN_SESSION_KEY, mSessionKey);
+                    values.put(DBSystem.Account.COLUMN_LAST_ACTIVE, 1);
+                    values.put(DBSystem.Account.COLUMN_META_CACHED, System.currentTimeMillis());
+                    
+                    int updated = getContentResolver().update(ACCOUNT_CONTENT_URI, values,
+                            DBSystem.Account.COLUMN_MEMBER_ID + " = ? AND " + DBSystem.Account.COLUMN_NAME + " = ?",
+                            new String[] { mMemberId, mApiName });
+                    
+                    if (updated == 0) {
+                        getContentResolver().insert(ACCOUNT_CONTENT_URI, values);
+                        
+                        Log.d("XXX", "updated == 0");
+                    }
                     
                     // if (!AccountAuthenticatorService.hasAccount(mTarget.get())) {
                         Account account = new Account(mMemberId + "@" + mApiName, Constants.Account.TYPE);
@@ -353,7 +362,7 @@ public class LiquiDroid extends Base
                         }
                         
                         // add system account
-                        AccountAuthenticatorService.addAccount(LiquiDroid.this, mMemberId, apiKey, userData, authResponse);
+                        AccountAuthenticatorService.addAccount(LiquiDroid.this, mMemberId, mApiKey, userData, authResponse);
 
                         // add periodic sync
                         Bundle extrasPeriodic = new Bundle();
@@ -420,6 +429,9 @@ public class LiquiDroid extends Base
                     Toast.makeText(activity, mExceptionMsg, Toast.LENGTH_LONG).show();
                 } else {
                     if (getIntent().getAction() != null && getIntent().getAction().equals(getString(R.string.action_login_sync))) {
+                        
+                        Log.d("XXX", "LoginTask finished.");
+                        
                         activity.finish();
                     } else {
                         Intent intent = new Intent().setClass(LiquiDroid.this, MemberActivity.class);
@@ -431,6 +443,8 @@ public class LiquiDroid extends Base
                         extras.putString(Constants.Account.SESSION_KEY, mSessionKey);
                         intent.putExtras(extras);
                     
+                        Log.d("XXX", "LoginTask start member activity.");
+
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         activity.startActivity(intent);
                         activity.finish();
@@ -444,9 +458,9 @@ public class LiquiDroid extends Base
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         Cursor c = (Cursor)parent.getItemAtPosition(pos);
         
-        String name       = c.getString(c.getColumnIndex(DBSystem.TableLQFBs.COLUMN_NAME));
-        String url        = c.getString(c.getColumnIndex(DBSystem.TableLQFBs.COLUMN_URL));
-        String key        = c.getString(c.getColumnIndex(DBSystem.TableLQFBs.COLUMN_API_KEY));
+        String name       = c.getString(c.getColumnIndex(DBSystem.Instance.COLUMN_NAME));
+        String url        = c.getString(c.getColumnIndex(DBSystem.Instance.COLUMN_URL));
+        String key        = c.getString(c.getColumnIndex(DBSystem.Instance.COLUMN_API_KEY));
 
         setSettingStringValue("SpinnerLogin", String.valueOf(mSpinnerLQFBs.getSelectedItemPosition()));
         
@@ -496,7 +510,7 @@ public class LiquiDroid extends Base
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, CONTENT_URI, null, null, null, "_id");
+        return new CursorLoader(this, INSTANCE_CONTENT_URI, null, null, null, "_id");
     }
 
     @Override

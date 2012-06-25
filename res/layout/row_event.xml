@@ -29,7 +29,6 @@
     android:layout_height="wrap_content"
     android:background="?attr/row_box">
       <TextView
-        android:text="ID"
         android:id="@+id/tv_event_id"
         android:layout_marginRight="7dip"
         android:layout_width="wrap_content"
@@ -40,12 +39,10 @@
           android:id="@+id/tv_event"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:text="Event Title"
           android:textAppearance="?android:attr/textAppearanceSmall" />
 
       </LinearLayout>
       <TextView
-        android:text="Event Description"
         android:id="@+id/tv_desc"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

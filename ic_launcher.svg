@@ -179,7 +179,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -190,7 +190,7 @@
      transform="translate(0,-540.36218)">
     <g
        id="g3193"
-       transform="matrix(0.73199332,0,0,0.73199332,68.609714,213.4304)"
+       transform="matrix(0.91624793,0,0,0.91624793,21.440531,66.696994)"
        inkscape:export-filename="/home/koppi/workspace/lqfb-android-app/res/drawable-mdpi/ic_launcher.png"
        inkscape:export-xdpi="15.37"
        inkscape:export-ydpi="15.37">

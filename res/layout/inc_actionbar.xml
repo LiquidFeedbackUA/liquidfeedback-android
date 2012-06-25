@@ -30,7 +30,7 @@
         >
         <ImageView
             android:id="@+id/actionbar_home_logo"
-            android:contentDescription="Home"
+            android:contentDescription="@string/iv_home"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/actionbar_height"
             android:background="@drawable/actionbar_btn"
@@ -49,7 +49,7 @@
             >
             <!-- TODO: Make configurable. -->
             <ImageButton
-                android:contentDescription="Home Item"
+                android:contentDescription="@string/ib_home_item"
                 android:id="@+id/actionbar_home_btn"
                 style="@style/ActionBarHomeItem"
                 android:background="@drawable/actionbar_btn"

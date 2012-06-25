@@ -366,7 +366,7 @@ public class SyncService extends BaseService {
     private void performSync(Context context, Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult)
             throws OperationCanceledException {
 
-        AccountManager am = AccountManager.get(context);
+        AccountManager am = AccountManager.get(context.getApplicationContext());
         
         mApiName     = am.getUserData(account, Constants.Account.API_NAME);
         mApiUrl      = am.getUserData(account, Constants.Account.API_URL);

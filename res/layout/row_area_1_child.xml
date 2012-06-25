@@ -26,7 +26,7 @@
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Title"
+                android:text="@string/tv_title"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
@@ -36,17 +36,17 @@
                 android:layout_alignBaseline="@+id/tv_title"
                 android:layout_alignBottom="@+id/tv_title"
                 android:layout_alignParentRight="true"
-                android:text="120"
+                android:text="@string/tv_count"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
-                android:id="@+id/textView1"
+                android:id="@+id/tv_hash"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/tv_count"
                 android:layout_alignBottom="@+id/tv_count"
                 android:layout_toLeftOf="@+id/tv_count"
-                android:text="#"
+                android:text="@string/tv_hash"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
         </RelativeLayout>
     </LinearLayout>
@@ -60,6 +60,7 @@
 
         <ImageView
             android:id="@+id/iv_issues_new_count"
+            android:contentDescription="@string/iv_count"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:src="@drawable/ic_new" />
@@ -71,10 +72,11 @@
             android:layout_gravity="right"
             android:paddingLeft="3dip"
             android:paddingRight="3dip"
-            android:text="#" />
+            android:text="@string/tv_hash" />
 
         <ImageView
             android:id="@+id/iv_issues_discussion_count"
+            android:contentDescription="@string/iv_count"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -86,10 +88,11 @@
             android:layout_height="wrap_content"
             android:paddingLeft="3dip"
             android:paddingRight="3dip"
-            android:text="#" />
+            android:text="@string/tv_hash" />
 
         <ImageView
             android:id="@+id/iv_issues_frozen_count"
+            android:contentDescription="@string/iv_count"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -101,10 +104,11 @@
             android:layout_height="wrap_content"
             android:paddingLeft="3dip"
             android:paddingRight="3dip"
-            android:text="#" />
+            android:text="@string/tv_hash" />
 
         <ImageView
             android:id="@+id/iv_issues_voting_count"
+            android:contentDescription="@string/iv_count"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -116,10 +120,11 @@
             android:layout_height="wrap_content"
             android:paddingLeft="3dip"
             android:paddingRight="3dip"
-            android:text="#" />
+            android:text="@string/tv_hash" />
 
         <ImageView
             android:id="@+id/iv_issues_finished_count"
+            android:contentDescription="@string/iv_count"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -131,10 +136,11 @@
             android:layout_height="wrap_content"
             android:paddingLeft="3dip"
             android:paddingRight="3dip"
-            android:text="#" />
+            android:text="@string/tv_hash" />
 
         <ImageView
             android:id="@+id/iv_issues_cancelled_count"
+            android:contentDescription="@string/iv_count"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -146,11 +152,12 @@
             android:layout_height="wrap_content"
             android:paddingLeft="3dip"
             android:paddingRight="3dip"
-            android:text="#" />
+            android:text="@string/tv_hash" />
     </LinearLayout>
 
     <ImageView
         android:id="@+id/iv_membership"
+        android:contentDescription="@string/iv_membership"
         android:layout_width="21dip"
         android:layout_height="21dip"
         android:layout_alignBottom="@+id/linearLayout2"

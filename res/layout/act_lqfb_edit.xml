@@ -22,15 +22,12 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:background="?attr/info_box">
 
                 <LinearLayout
                     android:id="@+id/ll_lqfb_info"
                     android:layout_width="match_parent"
                     android:layout_height="fill_parent"
+                    android:background="?attr/info_box"
                     android:orientation="vertical" >
 
                     <EditText
@@ -62,7 +59,6 @@
                         android:layout_height="wrap_content"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
                     </LinearLayout>
-            </RelativeLayout>
 
             <View
                 android:id="@id/separator"

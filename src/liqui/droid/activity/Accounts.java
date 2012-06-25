@@ -21,6 +21,7 @@ import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -38,7 +39,13 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.joda.time.DateTime;
+import org.ocpsoft.pretty.time.PrettyTime;
+
+import java.util.Date;
+
 import liqui.droid.Constants;
+import liqui.droid.db.DBProvider;
 import liqui.droid.holder.BreadCrumbHolder;
 import liqui.droid.R;
 
@@ -119,7 +126,7 @@ public class Accounts extends Base implements OnItemClickListener {
     public void onItemClick(AdapterView<?> l, View v, int position, long id) {
         Account account = (Account)mListView.getItemAtPosition(position);
         Intent intent = new Intent();
-        intent.putExtra("ACCOUNT", account);
+        intent.putExtra(Constants.Account.NAME, account);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }
@@ -159,7 +166,7 @@ public class Accounts extends Base implements OnItemClickListener {
             View row = convertView;
             ViewHolder holder = null;
             
-            if(row == null)
+            if (row == null)
             {
                 LayoutInflater inflater = getLayoutInflater();
                 row = inflater.inflate(R.layout.row_account, parent, false);
@@ -174,8 +181,19 @@ public class Accounts extends Base implements OnItemClickListener {
             }
             
             Account account = getItem(position);
+            
             holder.tvTitle.setText(account.name);
-            holder.tvDesc.setText(mAccountManager.getUserData(account, Constants.Account.API_URL));
+            
+            Uri uri = dbUri(DBProvider.SYNC_RUN_CONTENT_URI);
+            String lastUpdate = queryString(uri, "last_update", new String[] { "MAX(sync_time) AS last_update" }, null, null, null);
+            
+            if (lastUpdate != null && !lastUpdate.equals("0")) {
+                PrettyTime pt = new PrettyTime();
+                Date dt = new DateTime(Long.parseLong(lastUpdate)).toDate();
+                holder.tvDesc.setText(getResources().getString(R.string.last_update) + " " + pt.format(dt));
+            } else {
+                holder.tvDesc.setText(getResources().getString(R.string.last_update_never));
+            }
             
             return row;
         }

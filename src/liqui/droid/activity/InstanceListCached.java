@@ -48,10 +48,10 @@ import android.widget.AdapterView.OnItemClickListener;
 /**
  * The Class LQFBListCached.
  */
-public class LQFBListCached extends Base
+public class InstanceListCached extends Base
     implements LoaderCallbacks<Cursor>, OnItemClickListener {
 
-    public static final Uri CONTENT_URI = DBSystemProvider.LQFBS_CONTENT_URI;
+    public static final Uri CONTENT_URI = DBSystemProvider.INSTANCE_CONTENT_URI;
     
     protected static final int ACTIVITY_CREATE = 2342;
     
@@ -61,7 +61,7 @@ public class LQFBListCached extends Base
     
     protected static final int DUPLICATE_ID = Menu.FIRST + 2;
     
-    protected LQFBCursorAdapter mAdapter;
+    protected InstanceCursorAdapter mAdapter;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,7 +73,7 @@ public class LQFBListCached extends Base
         createBreadcrumb(getString(R.string.lqfb_edit_instances), (BreadCrumbHolder[]) null);
         
         getSupportLoaderManager().initLoader(0, null, this);
-        mAdapter = new LQFBCursorAdapter(this, null, true);
+        mAdapter = new InstanceCursorAdapter(this, null, true);
         
         ListView listView = (ListView) findViewById(R.id.list_view);
         listView.setOnItemClickListener(this);
@@ -86,10 +86,10 @@ public class LQFBListCached extends Base
         
         Cursor c = (Cursor) adapterView.getAdapter().getItem(position);
         
-        Intent intent = new Intent().setClass(LQFBListCached.this, LQFBEdit.class);
+        Intent intent = new Intent().setClass(InstanceListCached.this, InstanceEdit.class);
         
-        Uri uri = Uri.parse(DBSystemProvider.LQFBS_CONTENT_URI + "/" + c.getInt(c.getColumnIndex(DBSystem.TableLQFBs.COLUMN_ID)));
-        intent.putExtra(DBSystemProvider.LQFBS_CONTENT_ITEM_TYPE, uri);
+        Uri uri = Uri.parse(DBSystemProvider.INSTANCE_CONTENT_URI + "/" + c.getInt(c.getColumnIndex(DBSystem.Instance.COLUMN_ID)));
+        intent.putExtra(DBSystemProvider.INSTANCE_CONTENT_ITEM_TYPE, uri);
         
         startActivityForResult(intent, ACTIVITY_EDIT);
     }
@@ -112,7 +112,7 @@ public class LQFBListCached extends Base
     }
     
     public void createLQFB() {
-        Intent i = new Intent(this, LQFBEdit.class);
+        Intent i = new Intent(this, InstanceEdit.class);
         startActivityForResult(i, ACTIVITY_CREATE);
     }
     
@@ -130,20 +130,20 @@ public class LQFBListCached extends Base
             case DELETE_ID:
                 AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
                         .getMenuInfo();
-                getContentResolver().delete(Uri.parse(DBSystemProvider.LQFBS_CONTENT_URI + "/" + info.id), null, null);
+                getContentResolver().delete(Uri.parse(DBSystemProvider.INSTANCE_CONTENT_URI + "/" + info.id), null, null);
                 return true;
             case DUPLICATE_ID:
                 AdapterContextMenuInfo info2 = (AdapterContextMenuInfo) item
                         .getMenuInfo();
-                Cursor c = getContentResolver().query(Uri.parse(DBSystemProvider.LQFBS_CONTENT_URI + "/" + info2.id), null, null, null, null);
+                Cursor c = getContentResolver().query(Uri.parse(DBSystemProvider.INSTANCE_CONTENT_URI + "/" + info2.id), null, null, null, null);
                 c.moveToFirst();
                 ContentValues values = new ContentValues();
-                values.put(DBSystem.TableLQFBs.COLUMN_NAME,    c.getString(c.getColumnIndex(DBSystem.TableLQFBs.COLUMN_NAME)));
-                values.put(DBSystem.TableLQFBs.COLUMN_URL,     c.getString(c.getColumnIndex(DBSystem.TableLQFBs.COLUMN_URL)));
-                values.put(DBSystem.TableLQFBs.COLUMN_WEB_URL, c.getString(c.getColumnIndex(DBSystem.TableLQFBs.COLUMN_WEB_URL)));
-                values.put(DBSystem.TableLQFBs.COLUMN_API_KEY, c.getString(c.getColumnIndex(DBSystem.TableLQFBs.COLUMN_API_KEY)));
+                values.put(DBSystem.Instance.COLUMN_NAME,    c.getString(c.getColumnIndex(DBSystem.Instance.COLUMN_NAME)));
+                values.put(DBSystem.Instance.COLUMN_URL,     c.getString(c.getColumnIndex(DBSystem.Instance.COLUMN_URL)));
+                values.put(DBSystem.Instance.COLUMN_WEB_URL, c.getString(c.getColumnIndex(DBSystem.Instance.COLUMN_WEB_URL)));
+                values.put(DBSystem.Instance.COLUMN_API_KEY, c.getString(c.getColumnIndex(DBSystem.Instance.COLUMN_API_KEY)));
                 c.close();
-                getContentResolver().insert(DBSystemProvider.LQFBS_CONTENT_URI, values);
+                getContentResolver().insert(DBSystemProvider.INSTANCE_CONTENT_URI, values);
                 return true;
         }
         return super.onContextItemSelected(item);
@@ -172,25 +172,25 @@ public class LQFBListCached extends Base
     }
     
     /**
-     * The LQFB cursor adapter.
+     * The Instance cursor adapter.
      */
-    public class LQFBCursorAdapter extends CursorAdapter {
+    public class InstanceCursorAdapter extends CursorAdapter {
 
-        public LQFBCursorAdapter(Context context, Cursor c, boolean autoRequery) {
+        public InstanceCursorAdapter(Context context, Cursor c, boolean autoRequery) {
             super(context, c, autoRequery);
         }
 
-        public LQFBCursorAdapter(Context context, Cursor c, int flags) {
+        public InstanceCursorAdapter(Context context, Cursor c, int flags) {
             super(context, c, flags);
         }
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
             
-            String name     = cursor.getString(cursor.getColumnIndex(DBSystem.TableLQFBs.COLUMN_NAME));
-            String web_url  = cursor.getString(cursor.getColumnIndex(DBSystem.TableLQFBs.COLUMN_WEB_URL));
-            String url      = cursor.getString(cursor.getColumnIndex(DBSystem.TableLQFBs.COLUMN_URL));
-            String api_key  = cursor.getString(cursor.getColumnIndex(DBSystem.TableLQFBs.COLUMN_API_KEY));
+            String name     = cursor.getString(cursor.getColumnIndex(DBSystem.Instance.COLUMN_NAME));
+            String web_url  = cursor.getString(cursor.getColumnIndex(DBSystem.Instance.COLUMN_WEB_URL));
+            String url      = cursor.getString(cursor.getColumnIndex(DBSystem.Instance.COLUMN_URL));
+            String api_key  = cursor.getString(cursor.getColumnIndex(DBSystem.Instance.COLUMN_API_KEY));
             
             TextView tv_summary = (TextView)view.findViewById(R.id.tv_title);
             tv_summary.setText(name);

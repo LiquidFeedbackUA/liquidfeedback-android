@@ -30,30 +30,47 @@ import android.text.TextUtils;
  * The Class DBSystemProvider.
  */
 public class DBSystemProvider extends ContentProvider {
-    
-    private DBSystem db;
-    
-    private static final String AUTHORITY = "liqui.droid.system";
-    
-    // lqfbs
-    private static final int LQFBS    = 1;
-    private static final int LQFBS_ID = 2;
-    private static final String LQFBS_PATH = "lqfbs";
 
-    public static final Uri     LQFBS_CONTENT_URI  = Uri.parse("content://" + AUTHORITY + "/" + LQFBS_PATH);
-    public static final String  LQFBS_CONTENT_TYPE =      ContentResolver.CURSOR_DIR_BASE_TYPE  + "/lqfbs";
-    public static final String  LQFBS_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/lqfb";
+    private DBSystem db;
+
+    private static final String AUTHORITY = "liqui.droid.system";
+
+    // accounts
+    private static final int ACCOUNT = 1;
+    private static final int ACCOUNT_ID = 2;
+    private static final String ACCOUNT_PATH = "accounts";
+
+    public static final Uri ACCOUNT_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/"
+            + ACCOUNT_PATH);
+    public static final String ACCOUNT_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE
+            + "/accounts";
+    public static final String ACOUNT_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
+            + "/account";
+
+    // instances
+    private static final int INSTANCE = 3;
+    private static final int INSTANCE_ID = 4;
+    private static final String INSTANCE_PATH = "instances";
+
+    public static final Uri INSTANCE_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/"
+            + INSTANCE_PATH);
+    public static final String INSTANCE_CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/instances";
+    public static final String INSTANCE_CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE
+            + "/instance";
 
     private static final UriMatcher URIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-    
+
     static {
-        URIMatcher.addURI(AUTHORITY, LQFBS_PATH,        LQFBS);
-        URIMatcher.addURI(AUTHORITY, LQFBS_PATH + "/#", LQFBS_ID);
+        URIMatcher.addURI(AUTHORITY, ACCOUNT_PATH, ACCOUNT);
+        URIMatcher.addURI(AUTHORITY, ACCOUNT_PATH + "/#", ACCOUNT_ID);
+
+        URIMatcher.addURI(AUTHORITY, INSTANCE_PATH, INSTANCE);
+        URIMatcher.addURI(AUTHORITY, INSTANCE_PATH + "/#", INSTANCE_ID);
     }
 
     @Override
     public boolean onCreate() {
-        
+
         db = new DBSystem(getContext());
         return false;
     }
@@ -66,58 +83,59 @@ public class DBSystemProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         int uriType = URIMatcher.match(uri);
-        
+
         SQLiteDatabase sqlDB = db.getWritableDatabase();
         long id = 0;
-        
+
         switch (uriType) {
-            case LQFBS:
-                id = sqlDB.insertWithOnConflict("lqfb", null, values, SQLiteDatabase.CONFLICT_REPLACE);
+            case ACCOUNT:
+                id = sqlDB.insertWithOnConflict(DBSystem.Account.TABLE, null, values,
+                        SQLiteDatabase.CONFLICT_REPLACE);
                 getContext().getContentResolver().notifyChange(uri, null);
-                return Uri.parse(LQFBS_PATH + "/" + id);
-        default:
-            throw new IllegalArgumentException("Unknown URI: " + uri);
+                return Uri.parse(ACCOUNT_PATH + "/" + id);
+            case INSTANCE:
+                id = sqlDB.insertWithOnConflict(DBSystem.Instance.TABLE, null, values,
+                        SQLiteDatabase.CONFLICT_REPLACE);
+                getContext().getContentResolver().notifyChange(uri, null);
+                return Uri.parse(INSTANCE_PATH + "/" + id);
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
         }
     }
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         int uriType = URIMatcher.match(uri);
-        
+
         SQLiteDatabase sqlDB = db.getWritableDatabase();
-        
+
         int rowsUpdated = 0;
-        
+
         switch (uriType) {
-        case LQFBS:
-            rowsUpdated = sqlDB.update(DBSystem.TableLQFBs.TABLE, 
-                    values, 
-                    selection,
-                    selectionArgs);
-            break;
-        case LQFBS_ID:
-            String id = uri.getLastPathSegment();
-            if (TextUtils.isEmpty(selection)) {
-                rowsUpdated = sqlDB.update(DBSystem.TableLQFBs.TABLE, 
-                        values,
-                        DBSystem.TableLQFBs.COLUMN_ID + "=" + id, 
-                        null);
-            } else {
-                rowsUpdated = sqlDB.update(DBSystem.TableLQFBs.TABLE, 
-                        values,
-                        DBSystem.TableLQFBs.COLUMN_ID  + "=" + id 
-                        + " AND " 
-                        + selection,
-                        selectionArgs);
-            }
-            break;
-        default:
-            throw new IllegalArgumentException("Unknown URI: " + uri);
+            case ACCOUNT:
+                rowsUpdated = sqlDB.update(DBSystem.Account.TABLE, values, selection, selectionArgs);
+                break;
+            case INSTANCE:
+                rowsUpdated = sqlDB.update(DBSystem.Instance.TABLE, values, selection, selectionArgs);
+                break;
+            case INSTANCE_ID:
+                String id = uri.getLastPathSegment();
+                if (TextUtils.isEmpty(selection)) {
+                    rowsUpdated = sqlDB.update(DBSystem.Instance.TABLE, values,
+                            DBSystem.Instance.COLUMN_ID + "=" + id, null);
+                } else {
+                    rowsUpdated = sqlDB.update(DBSystem.Instance.TABLE, values,
+                            DBSystem.Instance.COLUMN_ID + "=" + id + " AND " + selection,
+                            selectionArgs);
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
         }
 
         // Make sure that potential listeners are getting notified
         getContext().getContentResolver().notifyChange(uri, null);
-        
+
         return rowsUpdated;
     }
 
@@ -125,29 +143,31 @@ public class DBSystemProvider extends ContentProvider {
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         int uriType = URIMatcher.match(uri);
         SQLiteDatabase sqlDB = db.getWritableDatabase();
-        
-        int rowsDeleted = 0;
-        
-        switch (uriType) {
-        case LQFBS:
-            rowsDeleted = sqlDB.delete(DBSystem.TableLQFBs.TABLE, selection, selectionArgs);
-            break;
-        case LQFBS_ID:
-            String id = uri.getLastPathSegment();
 
-            if (TextUtils.isEmpty(selection)) {
-                rowsDeleted = sqlDB.delete(DBSystem.TableLQFBs.TABLE, DBSystem.TableLQFBs.COLUMN_ID + "=" + id,  null);
-            } else {
-                rowsDeleted = sqlDB.delete(DBSystem.TableLQFBs.TABLE,
-                        DBSystem.TableLQFBs.COLUMN_ID + "=" + id 
-                        + " and " + selection,
-                        selectionArgs);
-            }
-            break;
-        default:
-            throw new IllegalArgumentException("Unknown URI: " + uri);
+        int rowsDeleted = 0;
+
+        switch (uriType) {
+            case ACCOUNT:
+                rowsDeleted = sqlDB.delete(DBSystem.Account.TABLE, selection, selectionArgs);
+                break;
+            case INSTANCE:
+                rowsDeleted = sqlDB.delete(DBSystem.Instance.TABLE, selection, selectionArgs);
+                break;
+            case INSTANCE_ID:
+                String id = uri.getLastPathSegment();
+
+                if (TextUtils.isEmpty(selection)) {
+                    rowsDeleted = sqlDB.delete(DBSystem.Instance.TABLE, DBSystem.Instance.COLUMN_ID
+                            + "=" + id, null);
+                } else {
+                    rowsDeleted = sqlDB.delete(DBSystem.Instance.TABLE, DBSystem.Instance.COLUMN_ID
+                            + "=" + id + " and " + selection, selectionArgs);
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
         }
-        
+
         // Make sure that potential listeners are getting notified
         getContext().getContentResolver().notifyChange(uri, null);
 
@@ -157,7 +177,7 @@ public class DBSystemProvider extends ContentProvider {
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
             String sortOrder) {
-        
+
         SQLiteDatabase sdb = db.getWritableDatabase();
 
         // Using SQLiteQueryBuilder instead of query() method
@@ -167,23 +187,31 @@ public class DBSystemProvider extends ContentProvider {
         // checkColumns(projection);
 
         Cursor cursor;
-        
-        switch (URIMatcher.match(uri)) {
-            case LQFBS:
-                queryBuilder.setTables("lqfb");
-                
-                cursor = queryBuilder.query(sdb, projection, selection, selectionArgs, null, null, sortOrder);
-                break;
-            case LQFBS_ID:
-                queryBuilder.setTables("lqfb");
-                
-                // Adding the ID to the original query
-                queryBuilder.appendWhere("_id" + "=" + uri.getLastPathSegment());
 
-                cursor = queryBuilder.query(sdb, projection, selection, selectionArgs, null, null, sortOrder);
+        switch (URIMatcher.match(uri)) {
+            case ACCOUNT:
+                queryBuilder.setTables(DBSystem.Account.TABLE);
+
+                cursor = queryBuilder.query(sdb, projection, selection, selectionArgs, null, null,
+                        sortOrder);
                 break;
-        default:
-            throw new IllegalArgumentException("Unknown URI: " + uri);
+            case INSTANCE:
+                queryBuilder.setTables(DBSystem.Instance.TABLE);
+
+                cursor = queryBuilder.query(sdb, projection, selection, selectionArgs, null, null,
+                        sortOrder);
+                break;
+            case INSTANCE_ID:
+                queryBuilder.setTables(DBSystem.Instance.TABLE);
+
+                // Adding the ID to the original query
+                queryBuilder.appendWhere(DBSystem.Instance.COLUMN_ID + "=" + uri.getLastPathSegment());
+
+                cursor = queryBuilder.query(sdb, projection, selection, selectionArgs, null, null,
+                        sortOrder);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown URI: " + uri);
         }
 
         // Make sure that potential listeners are getting notified
