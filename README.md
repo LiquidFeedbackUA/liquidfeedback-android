@@ -10,9 +10,9 @@ Goal of the project is a fully featured Android app connecting to [LiquidFeedbac
 
 LiquiDroid supports the following (API read-only) features:
 
-* API key authentication, multipe liquid feedback accounts,
-* Browsing of unit & area, issue & initiative, member & contacts,
+* API key authentication, multipe LiquidFeedback accounts,
 * Multiple LiquidFeedback instances sync, offline SQL cache,
+* Browsing of unit & area, issue & initiative, member & contacts,
 * Calendar sync & notifications,
 * Languages: english, german.
 
@@ -21,6 +21,10 @@ LiquiDroid supports the following experimental (API write) features:
 * Unit & area delegation,
 * Add & remove contacts.
 * Create new issue.
+
+LiquiDroid will support the following features in the near future:
+
+* To be written..
 
 LiquiDroid is supported on Android platforms v14 (aka [Ice Cream Sandwitch](http://www.android.com/about/ice-cream-sandwich/)) onwards.
 
