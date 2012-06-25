@@ -6,6 +6,24 @@ Goal of the project is a fully featured Android app connecting to [LiquidFeedbac
 ![screenshots-01.png](https://github.com/koppi/liquidroid/raw/master/screenshots-01.png)
 ![screenshots-02.png](https://github.com/koppi/liquidroid/raw/master/screenshots-02.png)
 
+## Features and Requirements
+
+LiquiDroid supports the following (API read-only) features:
+
+* API key authentication, multipe liquid feedback accounts,
+* Browsing of unit & area, issue & initiative, member & contacts,
+* Multiple LiquidFeedback instances sync, offline SQL cache,
+* Calendar sync & notifications,
+* Languages: english, german.
+
+LiquiDroid supports the following experimental (API write) features:
+
+* Unit & area delegation,
+* Add & remove contacts.
+* Create new issue.
+
+LiquiDroid is supported on Android platforms v14 (aka [Ice Cream Sandwitch](http://www.android.com/about/ice-cream-sandwich/)) onwards.
+
 ## Follow us on Twitter
 
 To keep updated about the development, feel free to follow us on twitter: [@LiquiDroidApp](http://twitter.com/LiquiDroidApp).
@@ -22,8 +40,6 @@ This project has the following dependencies:
 * markupartist actionbar which (already integrated in the project files) can be downloaded [here](https://github.com/johannilsson/android-actionbar),
 * PrettyTime which (already integrated in the project files) can be downloaded [here](http://ocpsoft.org/prettytime/),
 * ViewPagerIndicator which (already integrated in the project files) can be downloaded [here](http://viewpagerindicator.com),
-
-The app is supported on Android platforms v14 (aka [Ice Cream Sandwitch](http://www.android.com/about/ice-cream-sandwich/)) onwards.
 
 For more information see the following wiki pages.
 
