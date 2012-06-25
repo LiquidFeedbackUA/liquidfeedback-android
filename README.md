@@ -24,7 +24,9 @@ LiquiDroid supports the following experimental (API write) features:
 
 LiquiDroid will support the following features in the near future:
 
-* To be written..
+* Share issues & initiatives with hashtag for facebook, twitter, etc.,
+* LiquidFeedback instance statistics,
+* More to be written..
 
 LiquiDroid is supported on Android platforms v14 (aka [Ice Cream Sandwitch](http://www.android.com/about/ice-cream-sandwich/)) onwards.
 
