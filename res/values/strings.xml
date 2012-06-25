@@ -81,6 +81,9 @@
     <!-- AreaTreeCached -->
     <string name="units_and_areas">Units &amp; Areas</string>
     
+    <!-- CalendarSyncService -->
+    <string name="cal_voting_starts">Voting starts.</string>
+    
     <!-- ContactsListCached -->
     <string name="contacts">Contacts</string>
     

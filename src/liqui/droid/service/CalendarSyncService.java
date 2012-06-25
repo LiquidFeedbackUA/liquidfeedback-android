@@ -48,7 +48,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import lfapi.v2.schema.Interval;
 import liqui.droid.Constants;
+import liqui.droid.R;
 import liqui.droid.db.DB;
 import liqui.droid.db.DBProvider;
 
@@ -165,35 +167,17 @@ public class CalendarSyncService extends BaseService {
     }
     
     public static class Event {
-        public Date startDate;
-        public String title;
-        
-        public static class Location {
-            String getCity() {
-                return "Augsburg";
-            }
-            
-            String getCountry() {
-                return "Germany";
-            }
-        }
-        public static class Venue {
-            String getName() {
-                return "Venue";
-            }
-            
-            Location getLocation() {
-                return new Location();
-            }
-        }
-        
+        public Date startDate, endDate;
+        public String title, description, url;
+        public int status, id;
+
         Date getStartDate() {
             return startDate;
 //            return new Date(2012, 06, 23, 20, 30);
         }
         
         Date getEndDate() {
-            return null;
+            return endDate;
 //            return new Date(2012, 06, 23, 21, 30);
         }
         
@@ -201,24 +185,20 @@ public class CalendarSyncService extends BaseService {
             return title;
         }
         
-        Venue getVenue() {
-            return new Venue();
-        }
-        
-        String[] getArtists() {
-            return new String[] { "Jakob Flierl" };
-        }
-        
         String getDescription() {
-            return "Description";
+            return description;
         }
         
         int getStatus() {
-            return 2;
+            return status;
+        }
+        
+        String getUrl() {
+            return url;
         }
         
         long getId() {
-            return 42;
+            return id;
         }
         
     }
@@ -242,7 +222,7 @@ public class CalendarSyncService extends BaseService {
                     );
         }
         long dtstart = event.getStartDate().getTime();
-        long dtend = dtstart + (1000*60*60);
+        long dtend = dtstart + (1000*60*5);
         if(event.getEndDate() != null)
             dtend = event.getEndDate().getTime();
         builder.withValue(Events.CALENDAR_ID, calendar_id);
@@ -250,28 +230,9 @@ public class CalendarSyncService extends BaseService {
         builder.withValue(Events.DTEND, dtend);
         builder.withValue(Events.TITLE, event.getTitle());
         
-        String location = "";
-        if(event.getVenue().getName().length() > 0)
-            location += event.getVenue().getName() + "\n";
-        if(event.getVenue().getLocation().getCity().length() > 0)
-            location += event.getVenue().getLocation().getCity() + "\n";
-        if(event.getVenue().getLocation().getCountry().length() > 0)
-            location += event.getVenue().getLocation().getCountry() + "\n";
+        String description = event.getUrl() + "\n\n";
         
-        builder.withValue(Events.EVENT_LOCATION, location);
-        
-        String description = "http://www.last.fm/event/" + event.getId() + "\n\n";
-        
-        if(event.getArtists().length > 0) {
-            description += "LINEUP\n";
-            for(String artist : event.getArtists()) {
-                description += artist + "\n";
-            }
-            description += "\n";
-        }
-
         if(event.getDescription() != null && event.getDescription().length() > 0) {
-            description += "MORE DETAILS\n";
             description += event.getDescription();
         }
         
@@ -321,7 +282,7 @@ public class CalendarSyncService extends BaseService {
             return;
         }
         
-        // Load the local Last.fm events
+        // Load the local events
         Cursor c1 = mContentResolver.query(Events.CONTENT_URI.buildUpon().appendQueryParameter(Events.ACCOUNT_NAME, account.name).appendQueryParameter(Events.ACCOUNT_TYPE, account.type).build(), new String[] { Events._ID, Events._SYNC_ID }, Events.CALENDAR_ID + "=?", new String[] { String.valueOf(calendar_id) }, null);
         while (c1 != null && c1.moveToNext()) {
             if(is_full_sync) {
@@ -334,35 +295,90 @@ public class CalendarSyncService extends BaseService {
         }
         c1.close();
 
-        /*
-        Editor editor = PreferenceManager.getDefaultSharedPreferences(LastFMApplication.getInstance()).edit();
-        editor.remove("cal_do_full_sync");
-        editor.putInt("cal_sync_schema", syncSchema);
-        editor.commit();
-        */
-        
         try {
-            Uri ISSUES_URI = dbUri(DBProvider.EVENT_CONTENT_URI);
-            Cursor c = getContentResolver().query(ISSUES_URI, null, null, null, null);
+            Uri uri = dbUri("content://liqui.droid.db/issues");
+
+            String[] projection = new String[] {
+                    " issue._id                   AS _id                         ",
+                    " issue.population            AS issue_population            ",
+                    " area.name                   AS area_name                   ",
+                    
+                    " issue.policy_id             AS policy_id                   ",
+                    
+                    " issue.created               AS issue_created               ",
+                    " issue.accepted              AS issue_accepted              ",
+                    " issue.half_frozen           AS issue_half_frozen           ",
+                    " issue.fully_frozen          AS issue_fully_frozen          ",
+                    " issue.closed                AS issue_closed                ",
+                    " issue.cleaned               AS issue_cleaned               ",
+                    " issue.admission_time        AS issue_admission_time        ",
+                    " issue.discussion_time       AS issue_discussion_time       ",
+                    " issue.voting_time           AS issue_voting_time           ",
+                    " issue.snapshot              AS issue_snapshot              ",
+                    " issue.latest_snapshot_event AS issue_latest_snapshot_event ",
+                        
+                    " issue.state                 AS issue_state                 ",
+                    
+                    " policy.name                 AS policy_name                 "
+            };
+                
+            String[] selectionArgs = null;
+            String selection = "area._id = issue.area_id AND issue.policy_id = policy._id AND " +
+                    "(issue_state = 'admission' OR          " +
+                    " issue_state = 'discussion' OR         " +
+                    " issue_state = 'verification' OR       " +
+                    " issue_state = 'voting')               ";      
+
+            String   sortOrder = "_id DESC";
+
+            Cursor cursor = getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
 
             List<Event> es = new LinkedList<Event>();
             
-            c.moveToFirst();
-            while (!c.isAfterLast()) {
-                String eventId      = c.getString(c.getColumnIndex(DB.Event.COLUMN_ID));
-                String event        = c.getString(c.getColumnIndex(DB.Event.COLUMN_EVENT));
-                Long   eventCreated = c.getLong(c.getColumnIndex(DB.Event.COLUMN_OCCURRENCE));
+            cursor.moveToFirst();
+            while (!cursor.isAfterLast()) {
+                String issue_id         = cursor.getString(cursor.getColumnIndex("_id"));
+                String issue_state      = cursor.getString(cursor.getColumnIndex("issue_state"));
 
-                PrettyTime pt = new PrettyTime();
+                Integer policy_id       = cursor.getInt(cursor.getColumnIndex("policy_id"));
+                String policy_name     = cursor.getString(cursor.getColumnIndex("policy_name"));
+               
+                Long created         = cursor.getLong(cursor.getColumnIndex("issue_created"));
+                Long accepted        = cursor.getLong(cursor.getColumnIndex("issue_accepted"));
+                Long half_frozen     = cursor.getLong(cursor.getColumnIndex("issue_half_frozen"));
+                Long fully_frozen    = cursor.getLong(cursor.getColumnIndex("issue_fully_frozen"));
+                Long closed          = cursor.getLong(cursor.getColumnIndex("issue_closed"));
+
+                Uri policyUri = DBProvider.POLICY_CONTENT_URI.buildUpon().appendQueryParameter("db", getAPIDB()).build();
+
+                Cursor c = getContentResolver().query(policyUri, null, "_id = ?",
+                        new String[] { String.valueOf(policy_id) }, null);
+                c.moveToFirst();
                 
-                Log.d("XXXXXX", "Event " + eventId + ": " + event +
-                        " created " + pt.format(new DateTime(eventCreated).toDate()));
+                String policy_admission_time = c.getString(c.getColumnIndex("admission_time"));
+                String policy_discussion_time = c.getString(c.getColumnIndex("discussion_time"));
+                String policy_verification_time = c.getString(c.getColumnIndex("verification_time"));
+                String policy_voting_time = c.getString(c.getColumnIndex("voting_time"));
                 
-                Event e = new Event();
-                e.startDate = new DateTime(eventCreated).toDate();
-                e.title = "Event " + eventId + ": " + event;
-                es.add(e);
-                c.moveToNext();
+                c.close();
+                
+                if (DB.Issue.STATE_VOTING.equals(issue_state)) {
+                    Event e = new Event();
+                    
+                    Date votingEnd = new DateTime(fully_frozen).plus(new Interval(policy_voting_time).getPeriod()).toDate();
+                    
+                    e.startDate = new DateTime(fully_frozen).toDate();
+                    
+                    e.id = 100000 + Integer.parseInt(issue_id);
+                    e.status = 2;
+                    e.title = "Voting on i" + issue_id + " - " + policy_name;
+                    e.url = "http://dev.liquidfeedback.org/lf2/" + "issue/show/" + issue_id + ".html";
+                    e.description = getResources().getString(R.string.cal_voting_starts);
+                    
+                    es.add(e);
+                }
+                
+                cursor.moveToNext();
             }
 
             // Event[] events = server.getUserEvents(account.name);
