@@ -166,7 +166,7 @@ public class IndexScroller {
 		}
 	}
 	
-	private void setState(int state) {
+	void setState(int state) {
 		if (state < STATE_HIDDEN || state > STATE_HIDING)
 			return;
 		
@@ -208,7 +208,7 @@ public class IndexScroller {
 		return (int) ((y - mIndexbarRect.top - mIndexbarMargin) / ((mIndexbarRect.height() - 2 * mIndexbarMargin) / mSections.length));
 	}
 	
-	private void fade(long delay) {
+	void fade(long delay) {
 		mHandler.removeMessages(0);
 		mHandler.sendEmptyMessageAtTime(0, SystemClock.uptimeMillis() + delay);
 	}

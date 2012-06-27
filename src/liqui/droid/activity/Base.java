@@ -22,10 +22,8 @@ import liqui.droid.db.DBSystem;
 import liqui.droid.db.DBSystemProvider;
 import liqui.droid.holder.BreadCrumbHolder;
 import liqui.droid.service.SyncService;
-import liqui.droid.util.ActionBar;
 import liqui.droid.util.DetachableResultReceiver;
 import liqui.droid.util.ScrollingTextView;
-import liqui.droid.util.ActionBar.IntentAction;
 import liqui.droid.R;
 
 import android.accounts.Account;
@@ -42,19 +40,21 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentActivity;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 
 
 import java.lang.ref.WeakReference;
@@ -63,7 +63,7 @@ import java.util.HashMap;
 /**
  * The Class Base.
  */
-public abstract class Base extends FragmentActivity implements DetachableResultReceiver.Receiver {
+public abstract class Base extends SherlockFragmentActivity implements DetachableResultReceiver.Receiver {
     
     protected boolean mSyncing = false;
 
@@ -81,14 +81,14 @@ public abstract class Base extends FragmentActivity implements DetachableResultR
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         
-        outState.putBoolean("SYNCING", mSyncing);
+        outState.putBoolean("SYNCING", mSyncing); //$NON-NLS-1$
     }
     
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
       super.onRestoreInstanceState(savedInstanceState);
       
-      mSyncing = savedInstanceState.getBoolean("SYNCING");
+      mSyncing = savedInstanceState.getBoolean("SYNCING"); //$NON-NLS-1$
       // setProgressVisible(mSyncing);
       
     }
@@ -143,9 +143,15 @@ public abstract class Base extends FragmentActivity implements DetachableResultR
 //            inflater.inflate(R.menu.authenticated_menu, menu);
 //        }
         if (!isAuthenticated()) {
-            MenuInflater inflater = getMenuInflater();
+            MenuInflater inflater = getSupportMenuInflater();
             inflater.inflate(R.menu.anon_menu, menu);
         }
+        
+        if (!(this instanceof Search)) {
+            MenuInflater inflater = getSupportMenuInflater();
+            inflater.inflate(R.menu.search, menu);
+        }
+        
         return true;        
     }
     
@@ -163,6 +169,18 @@ public abstract class Base extends FragmentActivity implements DetachableResultR
         extras.putString(Constants.Account.SESSION_KEY, getSessionKey());
         
         switch (item.getItemId()) {
+        case android.R.id.home:
+            Intent intentHome = new Intent().setClass(getApplicationContext(), MemberActivity.class);
+            intentHome.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+               
+            intentHome.putExtras(extras);
+            startActivity(intentHome);
+            return true;
+        case R.id.menu_search:
+            Intent intentSearch = new Intent().setClass(getApplicationContext(), Search.class);
+            intentSearch.putExtras(extras);
+            startActivity(intentSearch);
+            return true;
         case R.id.menu_accounts:
             openAccounts();
             return true;
@@ -187,13 +205,17 @@ public abstract class Base extends FragmentActivity implements DetachableResultR
             Intent intentLQFBEdit = new Intent().setClass(this, InstanceListCached.class);
             intentLQFBEdit.putExtras(extras);
             startActivity(intentLQFBEdit);
-            overridePendingTransition(R.anim.activity_fade_in, R.anim.activity_fade_out);
             return true;
             /*
         case R.id.menu_contacts:
             openContacts();
             return true;
             */
+        case R.id.menu_prefs:
+            Intent intentPrefs = new Intent().setClass(this, Preferences.class);
+            intentPrefs.putExtras(extras);
+            startActivity(intentPrefs);
+            return true;
         case R.id.menu_refresh:
             triggerRefresh();
             return true;
@@ -293,7 +315,7 @@ public abstract class Base extends FragmentActivity implements DetachableResultR
                 part.setSpan(new UnderlineSpan(), 0, part.length(), 0);
                 tvBreadCrumb.append(part);
                 tvBreadCrumb.setTag(breadCrumbHolders[i]);
-                tvBreadCrumb.setBackgroundResource(R.drawable.default_link);
+                // tvBreadCrumb.setBackgroundResource(R.drawable.default_link);
                 tvBreadCrumb.setTextAppearance(getApplication(), android.R.style.TextAppearance_DeviceDefault_Medium);
                 tvBreadCrumb.setSingleLine(true);
                 tvBreadCrumb.setOnClickListener(new OnClickBreadCrumb(this));
@@ -302,7 +324,7 @@ public abstract class Base extends FragmentActivity implements DetachableResultR
     
                 if (i < breadCrumbHolders.length - 1) {
                     TextView slash = new TextView(getApplication());
-                    slash.setText(" / ");
+                    slash.setText(" / "); //$NON-NLS-1$
                     slash.setTextAppearance(getApplication(), android.R.style.TextAppearance_DeviceDefault_Medium);
                     llPart.addView(slash);
                 }
@@ -317,6 +339,30 @@ public abstract class Base extends FragmentActivity implements DetachableResultR
      * Sets the up action bar.
      */
     public void setUpActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        
+        actionBar.setDisplayUseLogoEnabled(false);
+        actionBar.setIcon(R.drawable.ic_home);
+        
+        Bundle extras = new Bundle();
+        extras.putString(Constants.Account.API_NAME,    getAPIName());
+        extras.putString(Constants.Account.API_URL,     getAPIUrl());
+        extras.putString(Constants.Account.MEMBER_ID,   getMemberId());
+        extras.putString(Constants.Account.SESSION_KEY, getSessionKey());
+
+        if (isAuthenticated()) {
+            Intent intent = new Intent().setClass(getApplicationContext(), MemberActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            intent.putExtras(extras);
+            
+            // actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+         }
+        
+        setActionBarTitle();
+        
+        /*
         ActionBar actionBar = (ActionBar) findViewById(R.id.actionbar);
         
         Bundle extras = new Bundle();
@@ -341,12 +387,11 @@ public abstract class Base extends FragmentActivity implements DetachableResultR
         actionBar.addAction(new IntentAction(this, searchIntent, R.drawable.ic_search));
         
         setActionBarTitle();
+        */
     }
     
     public void setActionBarTitle() {
-        ActionBar actionBar;
-        
-        actionBar = (ActionBar) findViewById(R.id.actionbar);
+        ActionBar actionBar= getSupportActionBar();
 
         if (this instanceof InstanceListCached
                 || this instanceof InstanceEdit
@@ -505,6 +550,7 @@ public abstract class Base extends FragmentActivity implements DetachableResultR
 
     @Override
     protected void onCreate(Bundle arg0) {
+        setTheme(R.style.Theme_Sherlock);
         super.onCreate(arg0);
         
         mReceiver = new DetachableResultReceiver(new Handler());

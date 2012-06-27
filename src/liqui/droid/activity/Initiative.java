@@ -135,6 +135,7 @@ public class Initiative extends Base {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 100) {
+            /* empty */
         }
     }
     

@@ -40,7 +40,7 @@ import liqui.droid.db.DBProvider;
 
 public class AccountAuthenticatorService extends Service {
     
-    private static final String TAG = "AccountAuthenticatorService";
+    private static final String TAG = "AccountAuthenticatorService"; //$NON-NLS-1$
     
     private static AccountAuthenticatorImpl sAccountAuthenticator = null;
 
@@ -61,7 +61,7 @@ public class AccountAuthenticatorService extends Service {
             
             String apiName = userData.getString(Constants.Account.API_NAME);
             
-            Account account = new Account(memberId + "@" + apiName, ctx.getResources().getString(R.string.account_type));
+            Account account = new Account(memberId + "@" + apiName, ctx.getResources().getString(R.string.account_type)); //$NON-NLS-1$
             AccountManager am = AccountManager.get(ctx.getApplicationContext());
             
             // Log.d("XXX", "addAccount userdata: " + userData.toString());
@@ -134,7 +134,7 @@ public class AccountAuthenticatorService extends Service {
          */
         @Override
         public Bundle confirmCredentials(AccountAuthenticatorResponse response, Account account, Bundle options) {
-            Log.i(TAG, "confirmCredentials");
+            Log.i(TAG, "confirmCredentials"); //$NON-NLS-1$
             return null;
         }
 
@@ -143,7 +143,7 @@ public class AccountAuthenticatorService extends Service {
          */
         @Override
         public Bundle editProperties(AccountAuthenticatorResponse response, String accountType) {
-            Log.i(TAG, "editProperties");
+            Log.i(TAG, "editProperties"); //$NON-NLS-1$
             return null;
         }
 
@@ -152,7 +152,7 @@ public class AccountAuthenticatorService extends Service {
          */
         @Override
         public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) throws NetworkErrorException {
-            Log.i(TAG, "getAuthToken");
+            Log.i(TAG, "getAuthToken"); //$NON-NLS-1$
             
             AccountManager am = AccountManager.get(mContext.getApplicationContext());
             String memberId   = account.name.toLowerCase().trim();
@@ -185,7 +185,7 @@ public class AccountAuthenticatorService extends Service {
          */
         @Override
         public String getAuthTokenLabel(String authTokenType) {
-            Log.i(TAG, "getAuthTokenLabel");
+            Log.i(TAG, "getAuthTokenLabel"); //$NON-NLS-1$
             return null;
         }
 
@@ -194,7 +194,7 @@ public class AccountAuthenticatorService extends Service {
          */
         @Override
         public Bundle hasFeatures(AccountAuthenticatorResponse response, Account account, String[] features) throws NetworkErrorException {
-            Log.i(TAG, "hasFeatures: " + features);
+            Log.i(TAG, "hasFeatures: " + features); //$NON-NLS-1$
             return null;
         }
 
@@ -203,7 +203,7 @@ public class AccountAuthenticatorService extends Service {
          */
         @Override
         public Bundle updateCredentials(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) {
-            Log.i(TAG, "updateCredentials");
+            Log.i(TAG, "updateCredentials"); //$NON-NLS-1$
             return null;
         }
     }
@@ -232,7 +232,7 @@ public class AccountAuthenticatorService extends Service {
     }
 
     public static void resyncAccount(Context context) {
-        Log.i(TAG, "resyncAccount");
+        Log.i(TAG, "resyncAccount"); //$NON-NLS-1$
         AccountManager am = AccountManager.get(context.getApplicationContext());
         Account[] accounts = am.getAccountsByType(context.getResources().getString(R.string.account_type));
         if (ContentResolver.getSyncAutomatically(accounts[0], DBProvider.AUTHORITY)) {

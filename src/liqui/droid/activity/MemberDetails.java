@@ -44,9 +44,6 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
@@ -55,6 +52,10 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
+
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
@@ -180,6 +181,7 @@ public class MemberDetails extends Base implements OnClickListener, OnItemClickL
      */
     @Override
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+        /* empty */
     }
 
     /* (non-Javadoc)
@@ -187,12 +189,13 @@ public class MemberDetails extends Base implements OnClickListener, OnItemClickL
      */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+        /* empty */
     }
 
     /* (non-Javadoc)
      * @see android.app.Activity#onContextItemSelected(android.view.MenuItem)
      */
-    public boolean onContextItemSelected(MenuItem item) {
+    public boolean onContextItemSelected(android.view.MenuItem item) {
         return super.onContextItemSelected(item);
     }
 
@@ -205,7 +208,7 @@ public class MemberDetails extends Base implements OnClickListener, OnItemClickL
         
         if (isAuthenticated()) {
             menu.clear();
-            MenuInflater inflater = getMenuInflater();
+            MenuInflater inflater = getSupportMenuInflater();
             if (!mMemberDetailId.equals(getMemberId())) {
                 if (isResultEmpty(dbUri(DBProvider.CONTACT_CONTENT_URI),
                         DB.Member.Contact.COLUMN_MEMBER_ID + " = ? AND " + DB.Member.Contact.COLUMN_OTHER_MEMBER_ID + " = ?",
@@ -348,6 +351,7 @@ public class MemberDetails extends Base implements OnClickListener, OnItemClickL
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 100) {
+            /* empty */
         }
     }
     

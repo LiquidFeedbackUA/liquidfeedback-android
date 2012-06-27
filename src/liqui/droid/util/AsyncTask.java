@@ -42,7 +42,7 @@ import android.os.Process;
  * @param <Result> 
  */
 public abstract class AsyncTask<Params, Progress, Result> {
-    private static final String LOG_TAG = "AsyncTask";
+    private static final String LOG_TAG = "AsyncTask"; //$NON-NLS-1$
 
     private static final int CORE_POOL_SIZE = 5;
     private static final int MAXIMUM_POOL_SIZE = 1024;
@@ -52,7 +52,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
         private final AtomicInteger mCount = new AtomicInteger(1);
 
         public Thread newThread(Runnable r) {
-            return new Thread(r, "AsyncTask #" + mCount.getAndIncrement());
+            return new Thread(r, "AsyncTask #" + mCount.getAndIncrement()); //$NON-NLS-1$
         }
     };
 
@@ -165,26 +165,26 @@ public abstract class AsyncTask<Params, Progress, Result> {
                 } catch (InterruptedException e) {
                     android.util.Log.w(LOG_TAG, e);
                 } catch (ExecutionException e) {
-                    throw new RuntimeException("An error occured while executing doInBackground()",
+                    throw new RuntimeException("An error occured while executing doInBackground()", //$NON-NLS-1$
                             e.getCause());
                 } catch (CancellationException e) {
                     postResultIfNotInvoked(null);
                 } catch (Throwable t) {
-                    throw new RuntimeException("An error occured while executing "
-                            + "doInBackground()", t);
+                    throw new RuntimeException("An error occured while executing " //$NON-NLS-1$
+                            + "doInBackground()", t); //$NON-NLS-1$
                 }
             }
         };
     }
 
-    private void postResultIfNotInvoked(Result result) {
+    void postResultIfNotInvoked(Result result) {
         final boolean wasTaskInvoked = mTaskInvoked.get();
         if (!wasTaskInvoked) {
             postResult(result);
         }
     }
 
-    private Result postResult(Result result) {
+    Result postResult(Result result) {
         @SuppressWarnings("unchecked")
         Message message = sHandler.obtainMessage(MESSAGE_POST_RESULT,
                 new AsyncTaskResult<Result>(this, result));
@@ -226,6 +226,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
      * @see #doInBackground
      */
     protected void onPreExecute() {
+        /* empty */
     }
 
     /**
@@ -241,6 +242,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
      * @see #onCancelled(Object) 
      */
     protected void onPostExecute(Result result) {
+        /* empty */
     }
 
     /**
@@ -253,6 +255,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
      * @see #doInBackground
      */
     protected void onProgressUpdate(Progress... values) {
+        /* empty */
     }
 
     /**
@@ -286,6 +289,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
      * @see #isCancelled()
      */
     protected void onCancelled() {
+        /* empty */
     }
 
     /**
@@ -438,12 +442,12 @@ public abstract class AsyncTask<Params, Progress, Result> {
         if (mStatus != Status.PENDING) {
             switch (mStatus) {
                 case RUNNING:
-                    throw new IllegalStateException("Cannot execute task:"
-                            + " the task is already running.");
+                    throw new IllegalStateException("Cannot execute task:" //$NON-NLS-1$
+                            + " the task is already running."); //$NON-NLS-1$
                 case FINISHED:
-                    throw new IllegalStateException("Cannot execute task:"
-                            + " the task has already been executed "
-                            + "(a task can be executed only once)");
+                    throw new IllegalStateException("Cannot execute task:" //$NON-NLS-1$
+                            + " the task has already been executed " //$NON-NLS-1$
+                            + "(a task can be executed only once)"); //$NON-NLS-1$
             }
         }
 
@@ -487,7 +491,7 @@ public abstract class AsyncTask<Params, Progress, Result> {
         }
     }
 
-    private void finish(Result result) {
+    void finish(Result result) {
         if (isCancelled()) {
             onCancelled(result);
         } else {

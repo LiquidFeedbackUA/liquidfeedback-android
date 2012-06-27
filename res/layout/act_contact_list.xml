@@ -2,14 +2,10 @@
 <LinearLayout
     android:id="@+id/inc_generic_list"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res/liqui.droid"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical">
-    <liqui.droid.util.ActionBar
-        android:id="@+id/actionbar"
-        app:title="@string/app_name"
-        style="@style/ActionBar" />
+    
     <include
         layout="@layout/inc_breadcrumb"
         android:id="@+id/breadcrumb" />

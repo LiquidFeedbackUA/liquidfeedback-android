@@ -41,9 +41,6 @@ import android.support.v4.widget.CursorAdapter;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -53,6 +50,10 @@ import android.widget.ImageView;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
+
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 
 /**
  * The Class MemberListCached.
@@ -133,18 +134,18 @@ public class MemberListCached extends Base
         menu.clear();
         
         if (mSortOrder.equals("name")) {
-            MenuInflater inflater = getMenuInflater();
+            MenuInflater inflater = getSupportMenuInflater();
             inflater.inflate(R.menu.sort_id_menu, menu);
         } else if (mSortOrder.equals("_id")) {
-            MenuInflater inflater = getMenuInflater();
+            MenuInflater inflater = getSupportMenuInflater();
             inflater.inflate(R.menu.sort_name_menu, menu);
         }
         
         if (mSortDir.equals("ASC")) {
-            MenuInflater inflater = getMenuInflater();
+            MenuInflater inflater = getSupportMenuInflater();
             inflater.inflate(R.menu.sort_asc_menu, menu);
         } else if (mSortDir.equals("DESC")) {
-            MenuInflater inflater = getMenuInflater();
+            MenuInflater inflater = getSupportMenuInflater();
             inflater.inflate(R.menu.sort_desc_menu, menu);
         }
         
@@ -201,10 +202,12 @@ public class MemberListCached extends Base
     private TextWatcher filterTextWatcher = new TextWatcher() {
 
         public void afterTextChanged(Editable s) {
+            /* empty */
         }
 
         public void beforeTextChanged(CharSequence s, int start, int count,
                 int after) {
+            /* empty */
         }
 
         public void onTextChanged(CharSequence s, int start, int before,

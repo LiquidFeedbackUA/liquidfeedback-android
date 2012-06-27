@@ -34,9 +34,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -47,6 +44,10 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
+
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 
 import org.ocpsoft.pretty.time.PrettyTime;
 
@@ -205,6 +206,7 @@ public class MemberActivity extends Base implements OnClickListener, OnItemClick
      */
     @Override
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+        /* empty */
     }
 
     /* (non-Javadoc)
@@ -212,6 +214,7 @@ public class MemberActivity extends Base implements OnClickListener, OnItemClick
      */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+        /* empty */
     }
 
     /* (non-Javadoc)
@@ -228,7 +231,7 @@ public class MemberActivity extends Base implements OnClickListener, OnItemClick
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();
         
-        MenuInflater inflater = getMenuInflater();
+        MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.refresh, menu);
         if (isAuthenticated()) {
             // menu.clear();
@@ -238,6 +241,9 @@ public class MemberActivity extends Base implements OnClickListener, OnItemClick
             // inflater.inflate(R.menu.about_menu, menu);
             inflater.inflate(R.menu.authenticated, menu);
         }
+
+        inflater.inflate(R.menu.search, menu);
+
         return true;
     }
 
@@ -278,7 +284,7 @@ public class MemberActivity extends Base implements OnClickListener, OnItemClick
     /**
      * Fill data.
      */
-    private void fillData() {
+    void fillData() {
         ListView listView = (ListView) findViewById(R.id.lv_actions);
         
         listView.setAdapter(mAdapter);

@@ -2,19 +2,12 @@
 <RelativeLayout
     android:id="@+id/main_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res/liqui.droid"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical">
 
-    <liqui.droid.util.ActionBar
-        android:id="@+id/actionbar"
-        style="@style/ActionBar"
-        app:title="@string/app_name" />
-
     <RelativeLayout
         android:id="@+id/breadcrumb"
-        android:layout_below="@id/actionbar"
         android:orientation="horizontal"
         android:padding="10dip"
         android:layout_width="fill_parent"

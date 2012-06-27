@@ -344,6 +344,7 @@ public class SyncService extends BaseService {
             try {
                 SyncService.this.performSync(mContext, account, extras, authority, provider, syncResult);
             } catch (OperationCanceledException e) {
+                /* empty */
             }
         }
     }
@@ -363,7 +364,7 @@ public class SyncService extends BaseService {
         return sSyncAdapter;
     }
     
-    private void performSync(Context context, Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult)
+    void performSync(Context context, Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult)
             throws OperationCanceledException {
 
         AccountManager am = AccountManager.get(context.getApplicationContext());

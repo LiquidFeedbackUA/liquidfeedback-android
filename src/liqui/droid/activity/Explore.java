@@ -29,8 +29,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -38,6 +36,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
+
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 
 /**
  * The Class Explore.
@@ -72,7 +73,7 @@ public class Explore extends Base {
     /**
      * Fill data.
      */
-    private void fillData() {
+    void fillData() {
         ListView listView = (ListView) findViewById(R.id.list_view);
         
         listView.setAdapter(mAdapter);
@@ -238,7 +239,7 @@ public class Explore extends Base {
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.clear();
         
-        MenuInflater inflater = getMenuInflater();
+        MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.refresh, menu);
         return true;
     }

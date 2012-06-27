@@ -65,7 +65,7 @@ public class MemberImage {
 	}
 	
 	//gets an existing download if one exists for the imageview
-	private static BitmapDownloaderTask getBitmapDownloaderTask(ImageView imageView) {
+	static BitmapDownloaderTask getBitmapDownloaderTask(ImageView imageView) {
 	    if (imageView != null) {
 	        Drawable drawable = imageView.getDrawable();
 	        if (drawable instanceof DownloadedDrawable) {
@@ -167,6 +167,7 @@ public class MemberImage {
             } catch (Exception e) {
                 Log.w("MemberImage", "Error while retrieving bitmap from member_id: " + memberId + " type: " + type);
             } finally {
+                /* empty */
             }
 
         } else {

@@ -82,6 +82,7 @@ public class CalendarSyncService extends BaseService {
             try {
                 CalendarSyncService.this.performSync(mContext, account, extras, authority, provider, syncResult);
             } catch (OperationCanceledException e) {
+                /* empty */
             }
         }
     }

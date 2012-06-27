@@ -37,8 +37,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -48,6 +46,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
+
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 
 import org.joda.time.DateTime;
 
@@ -301,6 +302,7 @@ public class MemberEdit extends Base implements OnClickListener, OnItemClickList
      */
     @Override
     public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+        /* empty */
     }
 
     /* (non-Javadoc)
@@ -308,6 +310,7 @@ public class MemberEdit extends Base implements OnClickListener, OnItemClickList
      */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+        /* empty */
     }
 
     /* (non-Javadoc)
@@ -324,7 +327,7 @@ public class MemberEdit extends Base implements OnClickListener, OnItemClickList
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (isAuthenticated()) {
             menu.clear();
-            MenuInflater inflater = getMenuInflater();
+            MenuInflater inflater = getSupportMenuInflater();
             inflater.inflate(R.menu.authenticated, menu);
         }
         return true;
@@ -334,7 +337,7 @@ public class MemberEdit extends Base implements OnClickListener, OnItemClickList
      * @see liqui.droid.BaseActivity#setMenuOptionItemSelected(android.view.MenuItem)
      */
     @Override
-    public boolean setMenuOptionItemSelected(MenuItem item) {
+    public boolean setMenuOptionItemSelected(com.actionbarsherlock.view.MenuItem item) {
         switch (item.getItemId()) {
             default:
                 return true;
@@ -347,6 +350,7 @@ public class MemberEdit extends Base implements OnClickListener, OnItemClickList
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 100) {
+            /* empty */
         }
     }
 }

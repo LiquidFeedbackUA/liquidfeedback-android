@@ -163,7 +163,7 @@ public class Test extends Base implements LoaderCallbacks<Cursor>, OnItemClickLi
                     startActivity(intent);
                     return true;
                 } catch (Exception e) {
-                    
+                    /* empty */
                 }
             default:
                 return super.onContextItemSelected(item);

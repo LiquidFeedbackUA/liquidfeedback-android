@@ -30,8 +30,6 @@ import liqui.droid.db.DBSystem;
 import liqui.droid.db.DBSystemProvider;
 import liqui.droid.service.AccountAuthenticatorService;
 import liqui.droid.service.SyncService;
-import liqui.droid.util.ActionBar;
-import liqui.droid.util.ActionBar.IntentAction;
 import liqui.droid.R;
 
 import android.support.v4.app.LoaderManager;
@@ -54,8 +52,6 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -99,6 +95,7 @@ public class LiquiDroid extends Base
          */
         @Override
         public void afterTextChanged(Editable s) {
+            /* empty */
         }
 
         /* (non-Javadoc)
@@ -106,6 +103,7 @@ public class LiquiDroid extends Base
          */
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            /* empty */
         }
 
         /* (non-Javadoc)
@@ -187,10 +185,13 @@ public class LiquiDroid extends Base
         
         setContentView(R.layout.act_main);
 
+        /*
         ActionBar actionBar = (ActionBar) findViewById(R.id.actionbar);
 
         actionBar.addAction(new IntentAction(this, new Intent(getApplicationContext(),
                 Search.class), R.drawable.ic_search));
+                
+                */
         
         mSpinnerLQFBs = (Spinner) findViewById(R.id.sp_lqfb_instance);
         
@@ -476,6 +477,7 @@ public class LiquiDroid extends Base
 
     @Override
     public void onNothingSelected(AdapterView<?> arg0) {
+        /* empty */
     }
     
     public void fillData() {
@@ -543,9 +545,9 @@ public class LiquiDroid extends Base
      * @see android.app.Activity#onPrepareOptionsMenu(android.view.Menu)
      */
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
+    public boolean onPrepareOptionsMenu(com.actionbarsherlock.view.Menu menu) {
         menu.clear();
-        MenuInflater inflater = getMenuInflater();
+        com.actionbarsherlock.view.MenuInflater inflater = getSupportMenuInflater();
         inflater.inflate(R.menu.anon_menu, menu);
         return true;
     }

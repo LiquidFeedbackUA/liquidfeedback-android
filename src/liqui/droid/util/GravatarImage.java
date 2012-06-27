@@ -355,7 +355,7 @@ public class GravatarImage {
      * @param imageView the image view
      * @return the bitmap downloader task
      */
-    private static BitmapDownloaderTask getBitmapDownloaderTask(ImageView imageView) {
+    static BitmapDownloaderTask getBitmapDownloaderTask(ImageView imageView) {
         if (imageView != null) {
             Drawable drawable = imageView.getDrawable();
             if (drawable instanceof DownloadedDrawable) {
@@ -417,7 +417,7 @@ public class GravatarImage {
      * @param url the url
      * @param bitmap The newly downloaded bitmap.
      */
-    private void addBitmapToCache(String url, Bitmap bitmap) {
+    void addBitmapToCache(String url, Bitmap bitmap) {
         if (bitmap != null) {
             synchronized (sHardBitmapCache) {
                 sHardBitmapCache.put(url, bitmap);

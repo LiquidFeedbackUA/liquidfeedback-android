@@ -773,7 +773,7 @@ public class TitlePageIndicator extends View implements PageIndicator {
             super(superState);
         }
 
-        private SavedState(Parcel in) {
+        SavedState(Parcel in) {
             super(in);
             currentPage = in.readInt();
         }

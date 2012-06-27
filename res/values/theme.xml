@@ -8,7 +8,6 @@
         <item name="textAppearanceUrl">@style/default_text_medium_url</item>
         <item name="textAppearanceLargeUrl">@style/default_text_large_url</item>
         <item name="textAppearanceSmallUrl">@style/default_text_small_url</item>
-        <item name="textAppearanceLink">@drawable/default_link</item>
         <item name="textAppearanceSubtitle">@style/default_text_medium_subtitle</item>
         <item name="android:divider">@drawable/default_divider</item>
         <item name="info_box">@drawable/default_info_box</item>
@@ -34,5 +33,5 @@
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">#00000000</item>
     </style>
-
+    
 </resources>

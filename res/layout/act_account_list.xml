@@ -2,25 +2,16 @@
 <RelativeLayout
     android:id="@+id/inc_generic_list"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res/liqui.droid"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical">
     
-    <liqui.droid.util.ActionBar
-        android:id="@+id/actionbar"
-        app:title="@string/app_name"
-        android:layout_alignParentTop="true"
-        
-        style="@style/ActionBar" />
-
     <LinearLayout
         android:id="@+id/breadcrumb" 
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:padding="10dip"
-        android:layout_below="@id/actionbar" >
+        android:padding="10dip" >
     
         <HorizontalScrollView
             android:layout_height="wrap_content"

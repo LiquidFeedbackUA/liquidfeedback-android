@@ -26,13 +26,14 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.ContextMenu;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.Button;
 import android.widget.Toast;
 import android.widget.EditText;
+
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
 /**
  * The Class LQFBEdit.
@@ -151,6 +152,7 @@ public class InstanceEdit extends Base {
      */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+        /* empty */
     }
 
     /* (non-Javadoc)

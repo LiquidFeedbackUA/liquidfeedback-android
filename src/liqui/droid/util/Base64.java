@@ -427,7 +427,7 @@ public class Base64
      * in which case one of them will be picked, though there is
      * no guarantee as to which one will be picked.
      */
-    private final static byte[] getDecodabet( int options ) {
+    final static byte[] getDecodabet( int options ) {
         if( (options & URL_SAFE) == URL_SAFE) {
             return _URL_SAFE_DECODABET;
         } else if ((options & ORDERED) == ORDERED) {
@@ -463,7 +463,7 @@ public class Base64
      * @return four byte array in Base64 notation.
      * @since 1.5.1
      */
-    private static byte[] encode3to4( byte[] b4, byte[] threeBytes, int numSigBytes, int options ) {
+    static byte[] encode3to4( byte[] b4, byte[] threeBytes, int numSigBytes, int options ) {
         encode3to4( threeBytes, 0, numSigBytes, b4, 0, options );
         return b4;
     }   // end encode3to4
@@ -492,7 +492,7 @@ public class Base64
      * @return the <var>destination</var> array
      * @since 1.3
      */
-    private static byte[] encode3to4( 
+    static byte[] encode3to4( 
     byte[] source, int srcOffset, int numSigBytes,
     byte[] destination, int destOffset, int options ) {
         
@@ -683,10 +683,10 @@ public class Base64
             throw e;
         }   // end catch
         finally {
-            try{ oos.close();   } catch( Exception e ){}
-            try{ gzos.close();  } catch( Exception e ){}
-            try{ b64os.close(); } catch( Exception e ){}
-            try{ baos.close();  } catch( Exception e ){}
+            try{ oos.close();   } catch( Exception e ){/* empty */}
+            try{ gzos.close();  } catch( Exception e ){/* empty */}
+            try{ b64os.close(); } catch( Exception e ){/* empty */}
+            try{ baos.close();  } catch( Exception e ){/* empty */}
         }   // end finally
         
         // Return value according to relevant encoding.
@@ -925,9 +925,9 @@ public class Base64
                 throw e;
             }   // end catch
             finally {
-                try{ gzos.close();  } catch( Exception e ){}
-                try{ b64os.close(); } catch( Exception e ){}
-                try{ baos.close();  } catch( Exception e ){}
+                try{ gzos.close();  } catch( Exception e ){/* empty */}
+                try{ b64os.close(); } catch( Exception e ){/* empty */}
+                try{ baos.close();  } catch( Exception e ){/* empty */}
             }   // end finally
 
             return baos.toByteArray();
@@ -1027,7 +1027,7 @@ public class Base64
      *         or there is not enough room in the array.
      * @since 1.3
      */
-    private static int decode4to3( 
+    static int decode4to3( 
     byte[] source, int srcOffset, 
     byte[] destination, int destOffset, int options ) {
         
@@ -1287,9 +1287,9 @@ public class Base64
                     // Just return originally-decoded bytes
                 }   // end catch
                 finally {
-                    try{ baos.close(); } catch( Exception e ){}
-                    try{ gzis.close(); } catch( Exception e ){}
-                    try{ bais.close(); } catch( Exception e ){}
+                    try{ baos.close(); } catch( Exception e ){/* empty */}
+                    try{ gzis.close(); } catch( Exception e ){/* empty */}
+                    try{ bais.close(); } catch( Exception e ){/* empty */}
                 }   // end finally
 
             }   // end if: gzipped
@@ -1379,8 +1379,8 @@ public class Base64
             throw e;    // Catch and throw in order to execute finally{}
         }   // end catch
         finally {
-            try{ bais.close(); } catch( Exception e ){}
-            try{ ois.close();  } catch( Exception e ){}
+            try{ bais.close(); } catch( Exception e ){/* empty */}
+            try{ ois.close();  } catch( Exception e ){/* empty */}
         }   // end finally
         
         return obj;
@@ -1419,7 +1419,7 @@ public class Base64
             throw e; // Catch and throw to execute finally{} block
         }   // end catch: java.io.IOException
         finally {
-            try{ bos.close(); } catch( Exception e ){}
+            try{ bos.close(); } catch( Exception e ){/* empty */}
         }   // end finally
         
     }   // end encodeToFile
@@ -1451,7 +1451,7 @@ public class Base64
             throw e; // Catch and throw to execute finally{} block
         }   // end catch: java.io.IOException
         finally {
-                try{ bos.close(); } catch( Exception e ){}
+                try{ bos.close(); } catch( Exception e ){/* empty */}
         }   // end finally
         
     }   // end decodeToFile
@@ -1512,7 +1512,7 @@ public class Base64
             throw e; // Catch and release to execute finally{}
         }   // end catch: java.io.IOException
         finally {
-            try{ bis.close(); } catch( Exception e) {}
+            try{ bis.close(); } catch( Exception e) {/* empty */}
         }   // end finally
         
         return decodedData;
@@ -1565,7 +1565,7 @@ public class Base64
             throw e; // Catch and release to execute finally{}
         }   // end catch: java.io.IOException
         finally {
-            try{ bis.close(); } catch( Exception e) {}
+            try{ bis.close(); } catch( Exception e) {/* empty */}
         }   // end finally
         
         return encodedData;
@@ -1594,7 +1594,7 @@ public class Base64
         }   // end catch
         finally {
             try { out.close(); }
-            catch( Exception ex ){}
+            catch( Exception ex ){/* empty */}
         }   // end finally    
     }   // end encodeFileToFile
 
@@ -1622,7 +1622,7 @@ public class Base64
         }   // end catch
         finally {
             try { out.close(); }
-            catch( Exception ex ){}
+            catch( Exception ex ){/* empty */}
         }   // end finally    
     }   // end decodeFileToFile
     

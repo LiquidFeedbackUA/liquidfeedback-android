@@ -29,6 +29,7 @@
     <string name="menu_accounts">Konten</string>
     <string name="menu_contacts">Kontakte</string>
     <string name="menu_profile">Profil</string>
+    <string name="menu_prefs">Einstellungen</string>
     
     <string name="menu_sort_ascending">Sortiere aufsteigend</string>
     <string name="menu_sort_descending">Sortiere absteigend</string>
@@ -38,6 +39,8 @@
 	<string name="menu_area_delegation_change">Delegation für Themenbereich ändern</string>
 	<string name="menu_area_participate">Themenbereich beitreten</string>
 	<string name="menu_area_withdraw">Themenbereich verlassen</string>
+	
+	<string name="menu_search">Search</string>
 	
 	<string name="issue_create">Neues Thema anlegen</string>
 	
@@ -120,6 +123,9 @@
     <string name="member_error_follow">%2$s</string>
     <string name="member_error_unfollow">%2$s</string>
 
+    <!-- Preferences -->
+    <string name="settings_general">Allgemeine Einstellungen</string>
+    
     <!-- Search -->
     <string name="search">Suche</string>
     <string name="search_type_to_filter">Suche..</string>

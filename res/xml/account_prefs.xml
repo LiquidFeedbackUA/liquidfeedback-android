@@ -7,8 +7,12 @@
 
     <PreferenceScreen
         android:key="account_settings"
-        android:title="LQFB Settings"
+        android:title="LiquiDroid Settings"
         android:summary="Configure sync settings">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="liqui.droid"
+            android:targetClass="liqui.droid.activity.Preferences" />
     </PreferenceScreen>
 
 </PreferenceScreen>
