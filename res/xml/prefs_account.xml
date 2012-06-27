@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+  <PreferenceCategory
+		android:title="Account"
+	    android:key="prefs_account">
+    
+    <EditTextPreference
+        android:key="api_key"
+        android:title="API key"
+        />
+    
+  </PreferenceCategory>
+  <PreferenceCategory
+		android:title="Synchronization"
+	    android:key="prefs_sync">
+	    
+	    <CheckBoxPreference
+	    	android:key="perform_updates"
+	        android:summary="Enable or disable data updates"
+	        android:title="Enable updates"
+	        android:defaultValue="true"
+	        />
+	    
+	    <ListPreference
+	        android:key="sync_interval"
+	        android:title="Synchronization interval"
+	        android:entries="@array/sync_intervals"
+	        android:entryValues="@array/sync_intervals_values"
+	        />
+  </PreferenceCategory>
+</PreferenceScreen>

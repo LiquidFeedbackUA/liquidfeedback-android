@@ -27,4 +27,20 @@
         <item>Members</item>
         <item>Contacts</item>
     </string-array>
+    <string-array
+        name="sync_intervals">
+        <item>1 hour</item>
+        <item>6 hours</item>
+        <item>24 hours</item>
+        <item>4 days</item>
+        <item>7 days</item>
+    </string-array>
+    <string-array
+        name="sync_intervals_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
 </resources>

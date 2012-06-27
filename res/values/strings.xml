@@ -144,7 +144,9 @@
     <string name="area_leave_error">%2$s</string>
     
     <!-- Preferences -->
+    <string name="settings_title">Settings</string>
     <string name="settings_general">General settings</string>
+    <string name="settings_about">About LiquiDroid</string>
     
     <!-- Search -->
     <string name="search">Search</string>

@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:nextFocusUp="@id/search_box"
         android:nextFocusLeft="@id/search_box"
-        android:hint="type to filter"
+        android:hint="@string/search_type_to_filter"
         android:inputType="text"
         android:maxLines="1"/>
         

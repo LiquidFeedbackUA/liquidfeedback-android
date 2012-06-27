@@ -124,7 +124,10 @@
     <string name="member_error_unfollow">%2$s</string>
 
     <!-- Preferences -->
+    <string name="settings_title">Einstellungen</string>
     <string name="settings_general">Allgemeine Einstellungen</string>
+    <string name="settings_about">Über LiquiDroid</string>
+    
     
     <!-- Search -->
     <string name="search">Suche</string>

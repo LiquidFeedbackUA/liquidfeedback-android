@@ -39,7 +39,6 @@ import android.provider.CalendarContract.Events;
 import android.util.Log;
 
 import org.joda.time.DateTime;
-import org.ocpsoft.pretty.time.PrettyTime;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,7 +47,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import lfapi.v2.schema.Interval;
 import liqui.droid.Constants;
 import liqui.droid.R;
 import liqui.droid.db.DB;
@@ -344,11 +342,11 @@ public class CalendarSyncService extends BaseService {
                 Integer policy_id       = cursor.getInt(cursor.getColumnIndex("policy_id"));
                 String policy_name     = cursor.getString(cursor.getColumnIndex("policy_name"));
                
-                Long created         = cursor.getLong(cursor.getColumnIndex("issue_created"));
-                Long accepted        = cursor.getLong(cursor.getColumnIndex("issue_accepted"));
-                Long half_frozen     = cursor.getLong(cursor.getColumnIndex("issue_half_frozen"));
+                // Long created         = cursor.getLong(cursor.getColumnIndex("issue_created"));
+                // Long accepted        = cursor.getLong(cursor.getColumnIndex("issue_accepted"));
+                // Long half_frozen     = cursor.getLong(cursor.getColumnIndex("issue_half_frozen"));
                 Long fully_frozen    = cursor.getLong(cursor.getColumnIndex("issue_fully_frozen"));
-                Long closed          = cursor.getLong(cursor.getColumnIndex("issue_closed"));
+                // Long closed          = cursor.getLong(cursor.getColumnIndex("issue_closed"));
 
                 Uri policyUri = DBProvider.POLICY_CONTENT_URI.buildUpon().appendQueryParameter("db", getAPIDB()).build();
 
@@ -356,17 +354,17 @@ public class CalendarSyncService extends BaseService {
                         new String[] { String.valueOf(policy_id) }, null);
                 c.moveToFirst();
                 
-                String policy_admission_time = c.getString(c.getColumnIndex("admission_time"));
-                String policy_discussion_time = c.getString(c.getColumnIndex("discussion_time"));
-                String policy_verification_time = c.getString(c.getColumnIndex("verification_time"));
-                String policy_voting_time = c.getString(c.getColumnIndex("voting_time"));
+                // String policy_admission_time = c.getString(c.getColumnIndex("admission_time"));
+                // String policy_discussion_time = c.getString(c.getColumnIndex("discussion_time"));
+                // String policy_verification_time = c.getString(c.getColumnIndex("verification_time"));
+                // String policy_voting_time = c.getString(c.getColumnIndex("voting_time"));
                 
                 c.close();
                 
                 if (DB.Issue.STATE_VOTING.equals(issue_state)) {
                     Event e = new Event();
                     
-                    Date votingEnd = new DateTime(fully_frozen).plus(new Interval(policy_voting_time).getPeriod()).toDate();
+                    // Date votingEnd = new DateTime(fully_frozen).plus(new Interval(policy_voting_time).getPeriod()).toDate();
                     
                     e.startDate = new DateTime(fully_frozen).toDate();
                     

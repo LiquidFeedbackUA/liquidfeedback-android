@@ -12,7 +12,16 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="liqui.droid"
-            android:targetClass="liqui.droid.activity.Preferences" />
+            android:targetClass="liqui.droid.activity.Preferences" >
+            
+            <extra
+                android:name=":android:show_fragment"
+                android:value="liqui.droid.activity.Preferences$AccountSettingsPreferenceFragment"/>
+            
+            <extra
+                android:name=":android:no_headers"
+                android:value="true" />
+       </intent>
     </PreferenceScreen>
 
 </PreferenceScreen>

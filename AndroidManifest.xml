@@ -136,6 +136,9 @@
             android:name=".activity.Preferences"
             android:configChanges="orientation" />
         <activity
+            android:name=".activity.PrefsAccount"
+            android:configChanges="orientation" />
+        <activity
             android:name=".activity.Search"
             android:configChanges="orientation" />
         <activity
